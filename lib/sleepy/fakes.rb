@@ -2,6 +2,20 @@ require 'webmock'
 require 'sinatra/base'
 require 'sinatra/json'
 
+C = Faraday.new(url: 'https://test.dev') do |c|
+  c.request   :json
+  c.use       Sleepy::JsonParser
+  c.adapter   Faraday.default_adapter
+end
+H = Sleepy::Http.new(C)
+
+class Post < Sleepy::Model
+  self.uri = '/posts'
+  self.connection = C
+
+  attributes :title
+end
+
 class FakeJsonApi < Sinatra::Base
   set :dump_errors, false
   set :show_exceptions, false
@@ -47,10 +61,3 @@ WebMock.stub_request(
   :any,
   /\Ahttps:\/\/test\.dev/
 ).to_rack(FakeJsonApi.new)
-
-
-H = Sleepy::Http.new(Faraday.new(url: 'https://test.dev') do |c|
-  c.request   :json
-  c.use       Sleepy::JsonParser
-  c.adapter   Faraday.default_adapter
-end)

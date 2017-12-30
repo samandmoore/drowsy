@@ -29,7 +29,7 @@ class Sleepy::Http
 
         payload[:status] = response.status
 
-        handle_response(response)
+        Result.new handle_response(response)
       rescue Faraday::ConnectionFailed, Faraday::TimeoutError, Faraday::SSLError => e
         payload[:connection_error] = true
         raise Sleepy::ConnectionError, e
@@ -68,5 +68,23 @@ class Sleepy::Http
     else
       raise Sleepy::UnknownResponseError, response
     end
+  end
+
+  class Result
+    def initialize(response)
+      @response = response
+    end
+
+    def data
+      response.body[:data]
+    end
+
+    def errors
+      response.body[:errors]
+    end
+
+    private
+
+    attr_reader :response
   end
 end
