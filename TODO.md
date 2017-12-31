@@ -8,6 +8,6 @@ Features to add:
 - [x] where
 - [x] all
 - [ ] attribute dirty tracking
-- [ ] callbacks
+- [x] callbacks
 - [ ] associations
 - [x] ignore unknown attributes

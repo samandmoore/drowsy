@@ -3,8 +3,11 @@ require 'sleepy/persistence'
 require 'active_model'
 
 class Sleepy::Model
+  extend ActiveModel::Callbacks
   include ActiveModel::Model
   include Sleepy::Scoping
+
+  define_model_callbacks :create, :update, :save, :destroy
 
   class_attribute :connection, instance_accessor: false
   class_attribute :uri, instance_accessor: false
@@ -75,30 +78,32 @@ class Sleepy::Model
   end
 
   def save
-    save!
-  rescue Sleepy::ModelInvalid
-    false
+    if valid?
+      callback = persisted? ? :create : :update
+      run_callbacks callback do
+        run_callbacks :save do
+          Sleepy::Persistence.new(self).save
+        end
+      end
+    end
   end
 
   def save!
-    unless valid? && Sleepy::Persistence.new(self).save
-      raise Sleepy::ModelInvalid, self
-    end
-    true
+    save || raise(Sleepy::ModelInvalid, self)
   end
 
   def update(attributes)
-    update!(attributes)
-  rescue Sleepy::ModelInvalid
-    false
+    assign_attributes attributes
+    save
   end
 
   def update!(attributes)
-    assign_attributes attributes
-    save!
+    update(attributes) || raise(Sleepy::ModelInvalid, self)
   end
 
   def destroy
-    Sleepy::Persistence.new(self).destroy
+    run_callbacks :destroy do
+      Sleepy::Persistence.new(self).destroy
+    end
   end
 end
