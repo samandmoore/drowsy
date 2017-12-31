@@ -3,7 +3,7 @@ class Sleepy::Http
     @connection = connection
   end
 
-  %w(get post put patch delete).each do |method|
+  %i(get post put patch delete).each do |method|
     define_method(method) do |*args|
       request(method, *args)
     end
