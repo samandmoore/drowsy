@@ -9,7 +9,18 @@ class Sleepy::Model
   class_attribute :connection, instance_accessor: false
   class_attribute :uri, instance_accessor: false
 
-  class_attribute :primary_key, instance_accessor: false
+  class_attribute :_primary_key, instance_accessor: false
+  def self.primary_key=(name)
+    if self._primary_key && self._primary_key != :id
+      undef_method(self._primary_key)
+      undef_method("#{self._primary_key}=")
+    end
+    self._primary_key = name
+    attributes(name) unless name == :id
+  end
+  def self.primary_key
+    self._primary_key
+  end
   self.primary_key = :id
 
   class_attribute :known_attributes, instance_accessor: false

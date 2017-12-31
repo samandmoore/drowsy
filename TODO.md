@@ -1,4 +1,12 @@
 Features to add:
+- [x] save
+- [x] save!
+- [x] update
+- [x] update!
+- [x] destroy
+- [x] find
+- [x] where
+- [x] all
 - [ ] attribute dirty tracking
 - [ ] callbacks
 - [ ] associations
