@@ -7,11 +7,8 @@ class Sleepy::Persistence
   end
 
   def save
-    result = if model.persisted?
-               perform_http_request(:put)
-             else
-               perform_http_request(:post)
-             end
+    method = model.persisted? ? :put : :post
+    result = perform_http_request(method)
     model.assign_attributes(result.data)
     true
   rescue Sleepy::ResourceInvalid => e
