@@ -1,7 +1,7 @@
 class Sleepy::Relation
   include Enumerable
 
-  delegate :to_ary, :[], :any?, :empty?, :last, :size, to: :fetch_some
+  delegate :to_ary, :[], :any?, :empty?, :last, :size, :each, to: :fetch_some
 
   attr_accessor :params
 
@@ -16,10 +16,6 @@ class Sleepy::Relation
   def self.destroy_existing(id); end
   def self.save_existing(id, attributes); end
   def self.update_existing(id, attributes); end
-
-  def each(&block)
-    fetch_some.each(&block)
-  end
 
   def find(id)
     where(klass.primary_key => id).fetch_one
