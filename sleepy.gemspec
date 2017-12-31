@@ -42,4 +42,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'webmock', '~> 2.0'
   spec.add_development_dependency 'sinatra', '>= 1.4'
   spec.add_development_dependency 'sinatra-contrib', '>= 1.4'
+  spec.add_development_dependency 'rubycritic'
 end
