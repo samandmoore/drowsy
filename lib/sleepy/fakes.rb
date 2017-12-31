@@ -79,7 +79,7 @@ class FakeJsonApi < Sinatra::Base
   end
 
   def build_post(id)
-    { id: id, title: "Post #{id}"}
+    { id: id, title: "Post #{id}", junk: "junk" }
   end
 
   get '/validation_errors' do
