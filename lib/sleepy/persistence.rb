@@ -21,9 +21,16 @@ class Sleepy::Persistence
     end
   end
 
+  def destroy
+    self.params = { model.class.primary_key => model.id }
+    perform_http_request(:delete)
+    true
+  end
+
   private
 
-  attr_reader :model, :connection, :uri_template, :params
+  attr_reader :model, :connection, :uri_template
+  attr_accessor :params
 
   def uri
     @uri ||= Sleepy::Uri.new(uri_template, params)

@@ -74,6 +74,10 @@ class FakeJsonApi < Sinatra::Base
     end
   end
 
+  delete '/posts/:id' do
+    status 204
+  end
+
   def build_post(id)
     { id: id, title: "Post #{id}"}
   end

@@ -9,6 +9,9 @@ class Sleepy::Model
   class_attribute :connection, instance_accessor: false
   class_attribute :uri, instance_accessor: false
 
+  class_attribute :primary_key, instance_accessor: false
+  self.primary_key = :id
+
   class_attribute :known_attributes, instance_accessor: false
   self.known_attributes = []
 
@@ -35,19 +38,22 @@ class Sleepy::Model
     self.known_attributes.concat names
   end
 
-  class_attribute :_primary_key, instance_accessor: false
-  def self.primary_key=(value)
-    self._primary_key = value
-    attributes(_primary_key)
+  def id
+    instance_variable_get("@#{self.class.primary_key}".freeze)
   end
-  self.primary_key = :id
+
+  def id=(value)
+    instance_variable_set("@#{self.class.primary_key}".freeze, value)
+  end
 
   def persisted?
-    send(self.class._primary_key).present?
+    id.present?
   end
 
   def attributes
-    self.class.known_attributes.each_with_object({}) do |k, m|
+    self.class.known_attributes.each_with_object(
+      { self.class.primary_key => id }
+    ) do |k, m|
       m[k] = send(k)
     end
   end
@@ -76,5 +82,7 @@ class Sleepy::Model
     save!
   end
 
-  def destroy; end
+  def destroy
+    Sleepy::Persistence.new(self).destroy
+  end
 end
