@@ -53,16 +53,27 @@ class Sleepy::Model
   end
 
   def save
-    if valid?
-      Sleepy::Persistence.new(self).save
-    else
-      false
+    save!
+  rescue Sleepy::ModelInvalid
+    false
+  end
+
+  def save!
+    unless valid? && Sleepy::Persistence.new(self).save
+      raise Sleepy::ModelInvalid, self
     end
+    true
   end
 
   def update(attributes)
+    update!(attributes)
+  rescue Sleepy::ModelInvalid
+    false
+  end
+
+  def update!(attributes)
     assign_attributes attributes
-    save
+    save!
   end
 
   def destroy; end

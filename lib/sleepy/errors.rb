@@ -28,4 +28,11 @@ module Sleepy
   class ClientError < ResponseError; end
   class ServerError < ResponseError; end
   class UnknownResponseError < ResponseError; end
+
+  class ModelInvalid < Error
+    def initialize(model)
+      @model = model
+      super(model.errors.full_messages.to_sentence)
+    end
+  end
 end
