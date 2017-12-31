@@ -79,7 +79,7 @@ class Sleepy::Model
 
   def save
     if valid?
-      callback = persisted? ? :create : :update
+      callback = persisted? ? :update : :create
       run_callbacks callback do
         run_callbacks :save do
           Sleepy::Persistence.new(self).save
