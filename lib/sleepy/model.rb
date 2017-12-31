@@ -30,7 +30,7 @@ class Sleepy::Model
         define_method n do
           instance_variable_get "@#{n}".freeze
         end
-        define_method "#{n}=" do |val|
+        define_method "#{n}=".freeze do |val|
           instance_variable_set "@#{n}".freeze, val
         end
       end
@@ -42,7 +42,7 @@ class Sleepy::Model
   def self.primary_key=(name)
     if self._primary_key && self._primary_key != :id
       undef_method(self._primary_key)
-      undef_method("#{self._primary_key}=")
+      undef_method("#{self._primary_key}=".freeze)
     end
     self._primary_key = name
     attributes(name)
