@@ -21,7 +21,7 @@ class Sleepy::Model
   end
 
   def self.attributes(*names)
-    unless instance_variable_defined?(:@attributes_module)
+    unless instance_variable_defined?("@attributes_module".freeze)
       @attributes_module = Module.new
       include @attributes_module
     end
