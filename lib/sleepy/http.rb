@@ -71,6 +71,8 @@ class Sleepy::Http
   end
 
   class Result
+    attr_reader :response
+
     def initialize(response)
       @response = response
     end
@@ -82,9 +84,5 @@ class Sleepy::Http
     def errors
       response.body[:errors]
     end
-
-    private
-
-    attr_reader :response
   end
 end

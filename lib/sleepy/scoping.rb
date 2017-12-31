@@ -4,7 +4,7 @@ module Sleepy::Scoping
   extend ActiveSupport::Concern
 
   class_methods do
-    delegate :find, :where, to: :all
+    delegate :find, :where, :create, to: :all
 
     def all
       Sleepy::Relation.new(self)

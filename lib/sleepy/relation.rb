@@ -1,7 +1,7 @@
 class Sleepy::Relation
   include Enumerable
 
-  delegate :to_ary, :[], :any?, :empty?, :last, :size, :each, to: :fetch_some
+  delegate :to_ary, :[], :any?, :empty?, :last, :size, :each, to: :fetch
 
   attr_accessor :params
 
@@ -12,13 +12,18 @@ class Sleepy::Relation
     @params = {}
   end
 
-  def self.create(attributes); end
-  def self.destroy_existing(id); end
-  def self.save_existing(id, attributes); end
-  def self.update_existing(id, attributes); end
+  def create(attributes = {})
+    klass.new(attributes).tap do |m|
+      m.save
+    end
+  end
+
+  def destroy_existing(id); raise NotImplementedError; end
+  def save_existing(id, attributes); raise NotImplementedError; end
+  def update_existing(id, attributes); raise NotImplementedError; end
 
   def find(id)
-    where(klass.primary_key => id).fetch_one
+    where(klass.primary_key => id).fetch.first
   end
 
   def where(conditions)
@@ -29,12 +34,8 @@ class Sleepy::Relation
 
   protected
 
-  def fetch_one
-    @fetch_one ||= new_instance(perform_http_request(:get).data)
-  end
-
-  def fetch_some
-    @fetch_some ||= new_collection(perform_http_request(:get).data)
+  def fetch
+    @fetch ||= new_collection_from_result(perform_http_request(:get))
   end
 
   private
@@ -45,12 +46,19 @@ class Sleepy::Relation
     @uri ||= Sleepy::Uri.new(uri_template, params)
   end
 
-  def new_collection(items)
-    items.map { |d| new_instance(d) }
+  def new_collection_from_result(result)
+    case result.data
+    when Array
+      result.data.map { |d| new_instance(d) }
+    when Hash
+      [new_instance(result.data)]
+    else
+      # raise Sleepy::ResponseError, result.response
+    end
   end
 
-  def new_instance(item)
-    klass.new(item)
+  def new_instance(attributes)
+    klass.new(attributes)
   end
 
   def perform_http_request(method)
