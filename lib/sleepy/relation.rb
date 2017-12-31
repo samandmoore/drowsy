@@ -53,7 +53,7 @@ class Sleepy::Relation
     when Hash
       [new_instance(result.data)]
     else
-      # raise Sleepy::ResponseError, result.response
+      raise Sleepy::ResponseError.new(result.response), 'Invalid response format'
     end
   end
 
