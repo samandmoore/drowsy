@@ -20,9 +20,9 @@ class Sleepy::Http
           apply_options(request, options) if options
 
           if method == :get
-            request.url path.to_s, params
+            request.url path, params
           else
-            request.url path.to_s
+            request.url path
             request.body = params
           end
         end

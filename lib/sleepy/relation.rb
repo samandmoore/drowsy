@@ -41,6 +41,10 @@ class Sleepy::Relation
 
   attr_reader :klass, :connection, :uri_template
 
+  def uri
+    @uri ||= Sleepy::Uri.new(uri_template, params)
+  end
+
   def new_collection(items)
     items.map { |d| new_instance(d) }
   end
@@ -51,9 +55,5 @@ class Sleepy::Relation
 
   def perform_http_request(method)
     Sleepy::Http.new(connection).request(method, uri.path.to_s, params: params.except(*uri.variables))
-  end
-
-  def uri
-    @uri ||= Sleepy::Uri.new(uri_template, params)
   end
 end

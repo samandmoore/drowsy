@@ -1,26 +1,28 @@
 require 'sleepy/scoping'
+require 'sleepy/persistence'
 require 'active_model'
 
 class Sleepy::Model
   include ActiveModel::Model
   include Sleepy::Scoping
 
-  class_attribute :connection
-  class_attribute :uri
-  class_attribute :primary_key
-  self.primary_key = :id
+  class_attribute :connection, instance_accessor: false
+  class_attribute :uri, instance_accessor: false
+
+  class_attribute :known_attributes, instance_accessor: false
+  self.known_attributes = []
 
   def self.inherited(child_class)
     # children should inherit attributes but not add them to parent
     child_class.known_attributes = self.known_attributes.dup
   end
 
-  class_attribute :known_attributes
-  self.known_attributes = []
-
   def self.attributes(*names)
-    mod = Module.new
-    mod.module_eval do
+    unless instance_variable_defined?(:@attributes_module)
+      @attributes_module = Module.new
+      include @attributes_module
+    end
+    @attributes_module.module_eval do
       names.each do |n|
         define_method n do
           instance_variable_get "@#{n}".freeze
@@ -30,11 +32,38 @@ class Sleepy::Model
         end
       end
     end
-    include mod
     self.known_attributes.concat names
   end
 
-  def save; end
-  def update(attributes); end
+  class_attribute :_primary_key, instance_accessor: false
+  def self.primary_key=(value)
+    self._primary_key = value
+    attributes(_primary_key)
+  end
+  self.primary_key = :id
+
+  def persisted?
+    send(self.class._primary_key).present?
+  end
+
+  def attributes
+    self.class.known_attributes.each_with_object({}) do |k, m|
+      m[k] = send(k)
+    end
+  end
+
+  def save
+    if valid?
+      Sleepy::Persistence.new(self).save
+    else
+      false
+    end
+  end
+
+  def update(attributes)
+    assign_attributes attributes
+    save
+  end
+
   def destroy; end
 end

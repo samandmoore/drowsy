@@ -5,7 +5,7 @@ require 'sinatra/json'
 C = Faraday.new(url: 'https://test.dev') do |c|
   c.request   :json
   c.use       Sleepy::JsonParser
-  c.response  :logger
+  c.response  :logger, nil, bodies: true
   c.adapter   Faraday.default_adapter
 end
 H = Sleepy::Http.new(C)
@@ -38,8 +38,44 @@ class FakeJsonApi < Sinatra::Base
     )
   end
 
+  put '/posts/:id' do
+    data = MultiJson.load(request.body)
+    if data['title']
+      json(
+        id: params['id'], title: data['title']
+      )
+    else
+      status 422
+      json(
+        errors: {
+          title: [
+            { error: 'blank', message: 'can\'t be blank' },
+          ]
+        }
+      )
+    end
+  end
+
+  post '/posts' do
+    data = MultiJson.load(request.body)
+    if data['title']
+      json(
+        id: rand(1..1000), title: data['title']
+      )
+    else
+      status 422
+      json(
+        errors: {
+          title: [
+            { error: 'blank', message: 'can\'t be blank' },
+          ]
+        }
+      )
+    end
+  end
+
   def build_post(id)
-    { title: "Post #{id}"}
+    { id: id, title: "Post #{id}"}
   end
 
   get '/validation_errors' do
