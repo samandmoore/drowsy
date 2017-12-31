@@ -50,7 +50,7 @@ class Sleepy::Relation
   end
 
   def perform_http_request(method)
-    Sleepy::Http.new(connection).request(method, uri.path.to_s, params: params.except(uri.variables))
+    Sleepy::Http.new(connection).request(method, uri.path.to_s, params: params.except(*uri.variables))
   end
 
   def uri

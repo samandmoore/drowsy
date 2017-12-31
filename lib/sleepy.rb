@@ -10,6 +10,7 @@ end
 require 'sleepy/errors'
 require 'sleepy/json_parser'
 require 'sleepy/http'
+require 'sleepy/uri'
 require 'sleepy/relation'
 require 'sleepy/scoping'
 require 'sleepy/model'

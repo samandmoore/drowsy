@@ -5,6 +5,7 @@ require 'sinatra/json'
 C = Faraday.new(url: 'https://test.dev') do |c|
   c.request   :json
   c.use       Sleepy::JsonParser
+  c.response  :logger
   c.adapter   Faraday.default_adapter
 end
 H = Sleepy::Http.new(C)
