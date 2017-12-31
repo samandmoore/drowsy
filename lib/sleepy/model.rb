@@ -7,6 +7,8 @@ class Sleepy::Model
 
   class_attribute :connection
   class_attribute :uri
+  class_attribute :primary_key
+  self.primary_key = :id
 
   def self.inherited(child_class)
     # children should inherit attributes but not add them to parent

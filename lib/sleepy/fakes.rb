@@ -10,7 +10,7 @@ end
 H = Sleepy::Http.new(C)
 
 class Post < Sleepy::Model
-  self.uri = '/posts'
+  self.uri = '/posts{/id}'
   self.connection = C
 
   attributes :title
@@ -24,10 +24,21 @@ class FakeJsonApi < Sinatra::Base
   get '/posts' do
     json(
       [
-        { title: 'One' },
-        { title: 'Two' }
+        build_post(1),
+        build_post(2),
+        build_post(3)
       ]
     )
+  end
+
+  get '/posts/:id' do
+    json(
+      build_post(params['id'])
+    )
+  end
+
+  def build_post(id)
+    { title: "Post #{id}"}
   end
 
   get '/validation_errors' do

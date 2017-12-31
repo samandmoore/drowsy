@@ -9,7 +9,7 @@ class Sleepy::Http
     end
   end
 
-  def request(method, path, params = nil, headers: nil, options: nil)
+  def request(method, path, params: nil, headers: nil, options: nil)
     ActiveSupport::Notifications.instrument('request.sleepy', method: method) do |payload|
       payload[:method] = method
       payload[:url] = connection.url_prefix.to_s + path

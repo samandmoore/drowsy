@@ -4,6 +4,7 @@ PATH
     sleepy (0.1.0)
       activemodel
       activesupport
+      addressable
       faraday (> 0.13)
       faraday_middleware
       multi_json
