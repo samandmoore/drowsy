@@ -34,11 +34,11 @@ class Sleepy::Relation
   protected
 
   def fetch_one
-    @fetch_one ||= new_instance(http.get(path, params: params.except(uri.variables)).data)
+    @fetch_one ||= new_instance(perform_http_request(:get).data)
   end
 
   def fetch_some
-    @fetch_some ||= new_collection(http.get(path, params: params.except(uri.variables)).data)
+    @fetch_some ||= new_collection(perform_http_request(:get).data)
   end
 
   private
@@ -53,12 +53,8 @@ class Sleepy::Relation
     klass.new(item)
   end
 
-  def http
-    Sleepy::Http.new(connection)
-  end
-
-  def path
-    uri.path.to_s
+  def perform_http_request(method)
+    Sleepy::Http.new(connection).request(method, uri.path.to_s, params: params.except(uri.variables))
   end
 
   def uri
