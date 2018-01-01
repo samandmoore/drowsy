@@ -1,4 +1,4 @@
-module Sleepy
+module Drowsy
   class Error < StandardError; end
 
   class ConnectionError < Error; end

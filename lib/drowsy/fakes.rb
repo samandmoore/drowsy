@@ -4,20 +4,20 @@ require 'sinatra/json'
 
 C = Faraday.new(url: 'https://test.dev') do |c|
   c.request   :json
-  c.use       Sleepy::JsonParser
+  c.use       Drowsy::JsonParser
   c.response  :logger, nil, bodies: true
   c.adapter   Faraday.default_adapter
 end
-H = Sleepy::Http.new(C)
+H = Drowsy::Http.new(C)
 
-class User < Sleepy::Model
+class User < Drowsy::Model
   self.uri = '/users{/id}'
   self.connection = C
   has_many :posts
   attributes :name
 end
 
-class Post < Sleepy::Model
+class Post < Drowsy::Model
   self.uri = '/posts{/id}'
   self.connection = C
   belongs_to :user

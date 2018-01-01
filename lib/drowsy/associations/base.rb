@@ -1,4 +1,4 @@
-class Sleepy::Associations::Base
+class Drowsy::Associations::Base
   attr_reader :parent_klass, :name, :options
 
   def initialize(parent_klass, name, options)
@@ -14,7 +14,7 @@ class Sleepy::Associations::Base
     when target_klass
       value
     else
-      raise Sleepy::Error, "invalid value (#{value.inspect}) assigned to association: #{parent_klass.name}##{name}"
+      raise Drowsy::Error, "invalid value (#{value.inspect}) assigned to association: #{parent_klass.name}##{name}"
     end
   end
 

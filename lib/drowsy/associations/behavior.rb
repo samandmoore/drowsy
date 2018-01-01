@@ -1,8 +1,8 @@
-require 'sleepy/associations/has_many'
-require 'sleepy/associations/has_one'
-require 'sleepy/associations/belongs_to'
+require 'drowsy/associations/has_many'
+require 'drowsy/associations/has_one'
+require 'drowsy/associations/belongs_to'
 
-module Sleepy::Associations::Behavior
+module Drowsy::Associations::Behavior
   extend ActiveSupport::Concern
 
   included do
@@ -12,21 +12,21 @@ module Sleepy::Associations::Behavior
 
   class_methods do
     def has_many(name, options = {})
-      Sleepy::Associations::HasMany.new(self, name, options).tap do |assoc|
+      Drowsy::Associations::HasMany.new(self, name, options).tap do |assoc|
         associations[name] = assoc
         assoc.attach
       end
     end
 
     def belongs_to(name, options = {})
-      Sleepy::Associations::BelongsTo.new(self, name, options).tap do |assoc|
+      Drowsy::Associations::BelongsTo.new(self, name, options).tap do |assoc|
         associations[name] = assoc
         assoc.attach
       end
     end
 
     def has_one(name, options = {})
-      Sleepy::Associations::HasOne.new(self, name, options).tap do |assoc|
+      Drowsy::Associations::HasOne.new(self, name, options).tap do |assoc|
         associations[name] = assoc
         assoc.attach
       end

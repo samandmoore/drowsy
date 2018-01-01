@@ -1,5 +1,5 @@
 require 'bundler/setup'
-require 'sleepy'
+require 'drowsy'
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure

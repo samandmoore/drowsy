@@ -1,6 +1,6 @@
 require 'addressable/template'
 
-class Sleepy::Uri
+class Drowsy::Uri
   def initialize(raw_template, attributes = {})
     @raw_template = raw_template
     @attributes = attributes

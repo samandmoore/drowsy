@@ -1,6 +1,6 @@
-require 'sleepy/fakes'
+require 'drowsy/fakes'
 
-RSpec.describe Sleepy::Model do
+RSpec.describe Drowsy::Model do
   describe '#initialize' do
     it 'accepts a hash'
     it 'ignores unknown attributes'

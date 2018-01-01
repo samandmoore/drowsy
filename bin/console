@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
-require "bundler/setup"
-require "sleepy"
-require 'sleepy/fakes'
-require "pry"
+require 'bundler/setup'
+require 'drowsy'
+require 'drowsy/fakes'
+require 'pry'
 Pry.start

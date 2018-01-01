@@ -1,13 +1,13 @@
-require 'sleepy/scoping'
-require 'sleepy/persistence'
-require 'sleepy/associations'
+require 'drowsy/scoping'
+require 'drowsy/persistence'
+require 'drowsy/associations'
 require 'active_model'
 
-class Sleepy::Model
+class Drowsy::Model
   extend ActiveModel::Callbacks
   include ActiveModel::Model
-  include Sleepy::Scoping
-  include Sleepy::Associations::Behavior
+  include Drowsy::Scoping
+  include Drowsy::Associations::Behavior
 
   define_model_callbacks :create, :update, :save, :destroy
 
@@ -84,14 +84,14 @@ class Sleepy::Model
       callback = persisted? ? :update : :create
       run_callbacks callback do
         run_callbacks :save do
-          Sleepy::Persistence.new(self).save
+          Drowsy::Persistence.new(self).save
         end
       end
     end
   end
 
   def save!
-    save || raise(Sleepy::ModelInvalid, self)
+    save || raise(Drowsy::ModelInvalid, self)
   end
 
   def update(attributes)
@@ -100,12 +100,12 @@ class Sleepy::Model
   end
 
   def update!(attributes)
-    update(attributes) || raise(Sleepy::ModelInvalid, self)
+    update(attributes) || raise(Drowsy::ModelInvalid, self)
   end
 
   def destroy
     run_callbacks :destroy do
-      Sleepy::Persistence.new(self).destroy
+      Drowsy::Persistence.new(self).destroy
     end
   end
 end

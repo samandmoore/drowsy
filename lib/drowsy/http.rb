@@ -1,4 +1,4 @@
-class Sleepy::Http
+class Drowsy::Http
   def initialize(connection)
     @connection = connection
   end
@@ -10,7 +10,7 @@ class Sleepy::Http
   end
 
   def request(method, path, params: nil, headers: nil, options: nil)
-    ActiveSupport::Notifications.instrument('request.sleepy', method: method) do |payload|
+    ActiveSupport::Notifications.instrument('request.drowsy', method: method) do |payload|
       payload[:method] = method
       payload[:url] = connection.url_prefix.to_s + path
 
@@ -32,7 +32,7 @@ class Sleepy::Http
         Result.new handle_response(response)
       rescue Faraday::ConnectionFailed, Faraday::TimeoutError, Faraday::SSLError => e
         payload[:connection_error] = true
-        raise Sleepy::ConnectionError, e
+        raise Drowsy::ConnectionError, e
       end
     end
   end
@@ -54,19 +54,19 @@ class Sleepy::Http
     when 200...400
       response
     when 401
-      raise Sleepy::UnauthorizedError, response
+      raise Drowsy::UnauthorizedError, response
     when 403
-      raise Sleepy::ForbiddenError, response
+      raise Drowsy::ForbiddenError, response
     when 404
-      raise Sleepy::ResourceNotFound, response
+      raise Drowsy::ResourceNotFound, response
     when 422
-      raise Sleepy::ResourceInvalid, response
+      raise Drowsy::ResourceInvalid, response
     when 401...500
-      raise Sleepy::ClientError, response
+      raise Drowsy::ClientError, response
     when 500...600
-      raise Sleepy::ServerError, response
+      raise Drowsy::ServerError, response
     else
-      raise Sleepy::UnknownResponseError, response
+      raise Drowsy::UnknownResponseError, response
     end
   end
 

@@ -1,4 +1,4 @@
-class Sleepy::Persistence
+class Drowsy::Persistence
   def initialize(model)
     @model = model
     @connection = model.class.connection
@@ -11,7 +11,7 @@ class Sleepy::Persistence
     result = perform_http_request(method)
     model.assign_attributes(result.data)
     true
-  rescue Sleepy::ResourceInvalid => e
+  rescue Drowsy::ResourceInvalid => e
     if e.errors
       add_errors_to_model(e.errors)
       false
@@ -30,11 +30,11 @@ class Sleepy::Persistence
   attr_accessor :params
 
   def uri
-    @uri ||= Sleepy::Uri.new(uri_template, params)
+    @uri ||= Drowsy::Uri.new(uri_template, params)
   end
 
   def perform_http_request(method)
-    Sleepy::Http.new(connection).request(method, uri.path.to_s, params: params.except(*uri.variables))
+    Drowsy::Http.new(connection).request(method, uri.path.to_s, params: params.except(*uri.variables))
   end
 
   def add_errors_to_model(errors_hash)

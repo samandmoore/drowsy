@@ -1,16 +1,16 @@
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'sleepy/version'
+require 'drowsy/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = 'sleepy'
-  spec.version       = Sleepy::VERSION
+  spec.name          = 'drowsy'
+  spec.version       = Drowsy::VERSION
   spec.authors       = ['Sam Moore']
   spec.email         = ['samandmoore@gmail.com']
 
   spec.summary       = %q{A library for REST API interactions}
   spec.description   = %q{A library for REST API interactions}
-  spec.homepage      = 'https://github.com/samandmoore/sleepy'
+  spec.homepage      = 'https://github.com/samandmoore/drowsy'
   spec.license       = 'MIT'
 
   # Prevent pushing this gem to RubyGems.org. To allow pushes either set the 'allowed_push_host'

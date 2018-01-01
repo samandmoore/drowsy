@@ -1,13 +1,13 @@
-require 'sleepy/relation'
+require 'drowsy/relation'
 
-module Sleepy::Scoping
+module Drowsy::Scoping
   extend ActiveSupport::Concern
 
   class_methods do
     delegate :find, :where, :create, to: :all
 
     def all
-      Sleepy::Relation.new(self)
+      Drowsy::Relation.new(self)
     end
   end
 end

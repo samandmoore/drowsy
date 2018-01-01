@@ -1,4 +1,4 @@
-class Sleepy::Relation
+class Drowsy::Relation
   include Enumerable
 
   delegate :to_ary, :[], :any?, :empty?, :last, :size, :each, to: :fetch
@@ -43,7 +43,7 @@ class Sleepy::Relation
   attr_reader :klass, :connection, :uri_template
 
   def uri
-    @uri ||= Sleepy::Uri.new(uri_template, params)
+    @uri ||= Drowsy::Uri.new(uri_template, params)
   end
 
   def new_collection_from_result(result)
@@ -53,7 +53,7 @@ class Sleepy::Relation
     when Hash
       [new_instance(result.data)]
     else
-      raise Sleepy::ResponseError.new(result.response), 'Invalid response format'
+      raise Drowsy::ResponseError.new(result.response), 'Invalid response format'
     end
   end
 
@@ -62,6 +62,6 @@ class Sleepy::Relation
   end
 
   def perform_http_request(method)
-    Sleepy::Http.new(connection).request(method, uri.path.to_s, params: params.except(*uri.variables))
+    Drowsy::Http.new(connection).request(method, uri.path.to_s, params: params.except(*uri.variables))
   end
 end

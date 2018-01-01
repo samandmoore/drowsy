@@ -1,6 +1,6 @@
 require 'multi_json'
 
-class Sleepy::JsonParser < Faraday::Response::Middleware
+class Drowsy::JsonParser < Faraday::Response::Middleware
   DEFAULT_RESPONSE = '{}'.freeze
 
   def parse(body)

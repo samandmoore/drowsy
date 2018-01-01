@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    sleepy (0.1.0)
+    drowsy (0.1.0)
       activemodel
       activesupport
       addressable
@@ -146,7 +146,7 @@ DEPENDENCIES
   rubycritic
   sinatra (>= 1.4)
   sinatra-contrib (>= 1.4)
-  sleepy!
+  drowsy!
   webmock (~> 2.0)
 
 BUNDLED WITH

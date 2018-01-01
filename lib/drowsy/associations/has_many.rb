@@ -1,6 +1,6 @@
-require 'sleepy/associations/base'
+require 'drowsy/associations/base'
 
-class Sleepy::Associations::HasMany < Sleepy::Associations::Base
+class Drowsy::Associations::HasMany < Drowsy::Associations::Base
   def attach
     self.tap do |association|
       name = association.name
@@ -15,7 +15,7 @@ class Sleepy::Associations::HasMany < Sleepy::Associations::Base
         end
 
         define_method "#{name}=".freeze do |values|
-          raise Sleepy::Error, 'value must be an Array' unless values.is_a?(Array)
+          raise Drowsy::Error, 'value must be an Array' unless values.is_a?(Array)
 
           converted_values = association.convert_many(values)
           converted_values.each do |r|

@@ -1,6 +1,6 @@
-require 'sleepy/associations/base'
+require 'drowsy/associations/base'
 
-class Sleepy::Associations::HasOne < Sleepy::Associations::Base
+class Drowsy::Associations::HasOne < Drowsy::Associations::Base
   def attach
     self.tap do |association|
       name = association.name
