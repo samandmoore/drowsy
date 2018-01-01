@@ -7,20 +7,26 @@ class Sleepy::Associations::Base
     @options = options
   end
 
-  def target_klass_name
-    options.fetch(:class_name) { name.to_s.singularize.classify }.to_s
+  def convert(value)
+    case value
+    when Hash
+      target_klass.new(value)
+    when target_klass
+      value
+    else
+      raise Sleepy::Error, "invalid value (#{value.inspect}) assigned to association: #{parent_klass.name}##{name}"
+    end
   end
 
-  module Functions
-    def self.convert(value, target_klass)
-      case value
-      when Hash
-        target_klass.new(value)
-      when target_klass
-        value
-      else
-        raise Sleepy::Error, "invalid type in association: #{value.class}"
-      end
-    end
+  def target_klass
+    target_klass_name.constantize
+  end
+
+  def inverse_of_attr_name
+    options.fetch(:inverse_of) { parent_klass.model_name.element.to_sym }.to_sym
+  end
+
+  def target_klass_name
+    options.fetch(:class_name) { name.to_s.singularize.classify }.to_s
   end
 end

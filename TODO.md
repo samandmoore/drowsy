@@ -9,7 +9,7 @@ Features to add:
 - [x] all
 - [ ] attribute dirty tracking
 - [x] has_one
-- [ ] association builder methods (build_ and association.build)
+- [x] association builder methods (build_ and association.build)
 - [x] callbacks
 - [x] associations
 - [x] ignore unknown attributes
