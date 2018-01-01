@@ -1,6 +1,10 @@
 # Drowsy
 
-TODO: Delete this and the text above, and describe your gem
+An ActiveRecord-y library for interacting with RESTful web
+APIs. Heavily inspired by [Her](https://github.com/remiprev/her), [Spyke](https://github.com/balvig/spyke), and [ActiveResource](https://github.com/rails/activeresource).
+
+At its core, Drowsy is just ActiveModel plain old Ruby objects and
+[Faraday](https://github.com/lostisland/faraday).
 
 ## Installation
 
