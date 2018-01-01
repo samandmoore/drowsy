@@ -9,5 +9,5 @@ Features to add:
 - [x] all
 - [ ] attribute dirty tracking
 - [x] callbacks
-- [ ] associations
+- [x] associations
 - [x] ignore unknown attributes
