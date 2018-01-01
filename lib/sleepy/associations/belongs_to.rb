@@ -26,6 +26,10 @@ class Sleepy::Associations::BelongsTo < Sleepy::Associations::Base
         end
         super(value)
       end
+
+      define_method "build_#{name}" do |attributes = {}|
+        send("#{name}=", m)
+      end
     end
   end
 end

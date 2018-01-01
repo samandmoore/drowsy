@@ -19,6 +19,10 @@ class Sleepy::Associations::HasOne < Sleepy::Associations::Base
 
         instance_variable_set("@#{name}".freeze, converted_value)
       end
+
+      define_method "build_#{name}" do |attributes = {}|
+        send("#{name}=", attributes)
+      end
     end
   end
 end

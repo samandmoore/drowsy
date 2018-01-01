@@ -7,7 +7,8 @@ class Sleepy::Associations::HasMany < Sleepy::Associations::Base
 
     parent_klass.class_eval do
       define_method name do
-        instance_variable_get("@#{name}".freeze)
+        ivar = "@#{name}".freeze
+        instance_variable_get(ivar)
       end
 
       define_method "#{name}=".freeze do |values|
