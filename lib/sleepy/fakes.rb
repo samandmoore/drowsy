@@ -10,10 +10,18 @@ C = Faraday.new(url: 'https://test.dev') do |c|
 end
 H = Sleepy::Http.new(C)
 
+
+class User < Sleepy::Model
+  self.uri = '/users{/id}'
+  self.connection = C
+  has_many :posts
+  attributes :name
+end
+
 class Post < Sleepy::Model
   self.uri = '/posts{/id}'
   self.connection = C
-
+  belongs_to :user
   attributes :title
 end
 
@@ -22,19 +30,29 @@ class FakeJsonApi < Sinatra::Base
   set :show_exceptions, false
   set :raise_errors, true
 
+  get '/users' do
+    json(
+      [
+        build_user,
+        build_user,
+        build_user
+      ]
+    )
+  end
+
   get '/posts' do
     json(
       [
-        build_post(1),
-        build_post(2),
-        build_post(3)
+        build_post,
+        build_post,
+        build_post
       ]
     )
   end
 
   get '/posts/:id' do
     json(
-      build_post(params['id'])
+      build_post(id: params['id'])
     )
   end
 
@@ -78,22 +96,13 @@ class FakeJsonApi < Sinatra::Base
     status 204
   end
 
-  def build_post(id)
-    { id: id, title: "Post #{id}", junk: "junk" }
+  def build_post(id: rand(1..1000), user_id: rand(1..1000))
+    { id: id, title: "Post #{id}", user_id: user_id, junk: "junk" }
   end
 
-  get '/validation_errors' do
-    status 422
-    json(
-      errors: {
-        title: [
-          { error: 'blank', message: 'can\'t be blank' },
-          { error: 'too_short', count: 10, message: 'is too short' }
-        ]
-      }
-    )
+  def build_user(id: rand(1..1000))
+    { id: id, name: "User #{id}", posts: [build_post(user_id: id), build_post(user_id: id)] }
   end
-
 
   %w(get post put patch delete).each do |method|
     return_block = Proc.new { status(params[:return_status]) }

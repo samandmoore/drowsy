@@ -1,11 +1,13 @@
 require 'sleepy/scoping'
 require 'sleepy/persistence'
+require 'sleepy/associations'
 require 'active_model'
 
 class Sleepy::Model
   extend ActiveModel::Callbacks
   include ActiveModel::Model
   include Sleepy::Scoping
+  include Sleepy::Associations::Behavior
 
   define_model_callbacks :create, :update, :save, :destroy
 
@@ -54,7 +56,7 @@ class Sleepy::Model
 
   def assign_attributes(new_attributes)
     # ignore unknown attributes
-    super(new_attributes.extract!(*self.class.known_attributes))
+    super(new_attributes.extract!(*(self.class.known_attributes + self.class.association_names)))
   end
 
   def id
