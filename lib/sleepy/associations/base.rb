@@ -23,6 +23,7 @@ class Sleepy::Associations::Base
   end
 
   def inverse_of_attr_name
+    # FIXME: the defaulting currently only works for one-to-one inverses
     options.fetch(:inverse_of) { parent_klass.model_name.element.to_sym }.to_sym
   end
 
