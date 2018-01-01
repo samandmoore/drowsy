@@ -12,7 +12,8 @@ class Drowsy::Http
   def request(method, path, params: nil, headers: nil, options: nil)
     ActiveSupport::Notifications.instrument('request.drowsy', method: method) do |payload|
       payload[:method] = method
-      payload[:url] = connection.url_prefix.to_s + path
+      payload[:service] = connection.url_prefix.to_s
+      payload[:path] = path
 
       begin
         response = connection.send(method) do |request|
@@ -31,7 +32,6 @@ class Drowsy::Http
 
         Result.new handle_response(response)
       rescue Faraday::ConnectionFailed, Faraday::TimeoutError, Faraday::SSLError => e
-        payload[:connection_error] = true
         raise Drowsy::ConnectionError, e
       end
     end

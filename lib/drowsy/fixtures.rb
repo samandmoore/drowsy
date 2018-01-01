@@ -17,11 +17,25 @@ class User < Drowsy::Model
   attributes :name
 end
 
+class AdminUser < User
+  self.primary_key = :special_id
+  attributes :role
+end
+
 class Post < Drowsy::Model
   self.uri = '/posts{/id}'
   self.connection = C
   belongs_to :user
   attributes :title
+end
+
+require 'active_support/subscriber'
+class DrowsyRequestSubscriber < ActiveSupport::Subscriber
+  attach_to 'drowsy'
+
+  def request(event)
+    puts "#{event.payload.inspect}, #{event.duration}"
+  end
 end
 
 class FakeJsonApi < Sinatra::Base

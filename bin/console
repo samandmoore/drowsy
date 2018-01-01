@@ -2,6 +2,6 @@
 
 require 'bundler/setup'
 require 'drowsy'
-require 'drowsy/fakes'
+require 'drowsy/fixtures'
 require 'pry'
 Pry.start
