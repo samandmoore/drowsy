@@ -10,7 +10,6 @@ C = Faraday.new(url: 'https://test.dev') do |c|
 end
 H = Sleepy::Http.new(C)
 
-
 class User < Sleepy::Model
   self.uri = '/users{/id}'
   self.connection = C
