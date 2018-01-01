@@ -8,8 +8,8 @@ Gem::Specification.new do |spec|
   spec.authors       = ['Sam Moore']
   spec.email         = ['samandmoore@gmail.com']
 
-  spec.summary       = %q{A library for REST API interactions}
-  spec.description   = %q{A library for REST API interactions}
+  spec.summary       = %q{An ActiveRecord-y library for RESTful web APIs.}
+  spec.description   = %q{An ActiveRecord-y library for RESTful web APIs.}
   spec.homepage      = 'https://github.com/samandmoore/drowsy'
   spec.license       = 'MIT'
 
