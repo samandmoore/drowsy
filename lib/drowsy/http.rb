@@ -1,3 +1,6 @@
+require 'active_support/notifications'
+require 'faraday'
+
 class Drowsy::Http
   def initialize(connection)
     @connection = connection

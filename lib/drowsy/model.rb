@@ -65,6 +65,6 @@ class Drowsy::Model
   end
 
   def inspect
-    ModelInspector.inspect(self)
+    Drowsy::ModelInspector.inspect(self)
   end
 end
