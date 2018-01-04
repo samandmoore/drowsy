@@ -3,7 +3,7 @@
 An ActiveRecord-y library for interacting with RESTful web
 APIs. Heavily inspired by [Her](https://github.com/remiprev/her), [Spyke](https://github.com/balvig/spyke), and [ActiveResource](https://github.com/rails/activeresource).
 
-At its core, Drowsy is just ActiveModel plain old Ruby objects and
+At its core, Drowsy is just ActiveModel-powered plain old Ruby objects and
 [Faraday](https://github.com/lostisland/faraday).
 
 ## Installation
@@ -25,6 +25,21 @@ Or install it yourself as:
 ## Usage
 
 TODO: Write usage instructions here
+
+### Working with an API
+
+* expected response format
+* included json middleware
+* creating a Faraday connection
+* interacting with multiple APIs
+
+### API-side validations
+
+TODO: talk about how these work
+
+### Custom requsts
+
+TODO: talk about Drowsy::Http#request
 
 ## Development
 

@@ -64,6 +64,15 @@ class Drowsy::Model
     end
   end
 
+  def hash
+    id.hash
+  end
+
+  def ==(other)
+    other.instance_of?(self.class) && id.present? && id == other.id
+  end
+  alias :eql? :==
+
   def inspect
     Drowsy::ModelInspector.inspect(self)
   end

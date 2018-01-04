@@ -8,6 +8,8 @@ Features to add:
 - [x] where
 - [x] all
 - [ ] attribute dirty tracking
+- [ ] add .scope behavior
+- [ ] add http failure fallback behavior
 - [x] has_one
 - [x] association builder methods (build_ and association.build)
 - [x] callbacks
