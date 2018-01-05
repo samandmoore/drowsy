@@ -12,10 +12,16 @@ class Drowsy::Relation
     @params = {}
   end
 
+  def build(attributes = {})
+    klass.new(params.merge(attributes))
+  end
+
   def create(attributes = {})
-    klass.new(attributes).tap do |m|
-      m.save
-    end
+    build(attributes).tap(&:save)
+  end
+
+  def create!(attributes = {})
+    build(attributes).tap(&:save!)
   end
 
   def destroy_existing(id); raise NotImplementedError; end
