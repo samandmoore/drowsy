@@ -3,8 +3,6 @@ class Drowsy::Relation
 
   delegate :to_ary, :[], :any?, :empty?, :last, :size, :each, to: :fetch
 
-  attr_accessor :params
-
   def initialize(klass)
     @klass = klass
     @connection = klass.connection
@@ -39,6 +37,8 @@ class Drowsy::Relation
   end
 
   protected
+
+  attr_accessor :params
 
   def fetch
     @fetch ||= new_collection_from_result(perform_http_request(:get))
