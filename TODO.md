@@ -10,6 +10,7 @@ Features to add:
 - [ ] attribute dirty tracking
 - [ ] add .scope behavior
 - [ ] add http failure fallback behavior
+- [ ] semian integration/adapter
 - [x] has_one
 - [x] association builder methods (build_ and association.build)
 - [x] callbacks
