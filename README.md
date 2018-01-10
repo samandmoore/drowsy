@@ -1,5 +1,7 @@
 # Drowsy
 
+# Under construction
+
 An ActiveRecord-y library for interacting with RESTful web
 APIs. Heavily inspired by [Her](https://github.com/remiprev/her), [Spyke](https://github.com/balvig/spyke), and [ActiveResource](https://github.com/rails/activeresource).
 
