@@ -1,4 +1,4 @@
-# Drowsy
+# Drowsy [![Build Status](https://travis-ci.org/samandmoore/drowsy.svg?branch=master)](https://travis-ci.org/samandmoore/drowsy)
 
 # Under construction
 
