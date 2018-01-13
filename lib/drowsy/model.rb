@@ -24,7 +24,7 @@ class Drowsy::Model
   # * .association_raw_names
   def self.assignable_attributes
     (
-      [primary_key] + known_attributes + association_names + association_raw_names
+      [:id] + [primary_key] + known_attributes + association_names + association_raw_names
     ).uniq
   end
 

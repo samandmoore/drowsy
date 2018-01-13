@@ -7,6 +7,7 @@ module Drowsy::Associations::Behavior
 
   included do
     class_attribute :associations, instance_accessor: false
+    self.associations = {}.freeze
   end
 
   class_methods do

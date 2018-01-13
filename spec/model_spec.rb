@@ -48,7 +48,17 @@ RSpec.describe Drowsy::Model do
   end
 
   describe '#id/id=' do
-    it 'manages the underlying primary key attribute'
+    it 'manages the underlying primary key attribute' do
+      u = AdminUser.new(id: 1)
+      expect(u.id).to eq(1)
+      expect(u.special_id).to eq(1)
+
+      u.id = 2
+      expect(u.id).to eq(2)
+      expect(u.special_id).to eq(2)
+
+      expect(u.attributes).to include(special_id: 2)
+    end
   end
 
   describe '#save' do
@@ -66,24 +76,99 @@ RSpec.describe Drowsy::Model do
   describe '#destroy' do
   end
 
-  describe '.attributes(names)' do
-  end
-
-  describe '.primary_key/primary_key=' do
-  end
-
-  describe '.known_attributes' do
-  end
-
-  describe '.all' do
-  end
-
-  describe '.where(conditions)' do
-  end
-
   describe '.find(id)' do
+    it 'responds to the method' do
+      expect(User.respond_to?(:find)).to eq(true)
+    end
   end
 
   describe '.create(attributes)' do
+    it 'responds to the method' do
+      expect(User.respond_to?(:create)).to eq(true)
+    end
+  end
+
+  describe '.all' do
+    it 'returns a Relation' do
+      expect(User.all).to be_a(Drowsy::Relation)
+    end
+  end
+
+  describe '.where(conditions)' do
+    it 'delegates to Relation' do
+      expect(User.where(Hash.new)).to be_a(Drowsy::Relation)
+    end
+  end
+
+  describe 'class definition methods' do
+    describe '.attributes(names)' do
+      before do
+        klass = Class.new(Drowsy::Model) do
+          self.uri = '/users{/id}'
+          self.connection = C
+        end
+
+        stub_const('TestUser', klass)
+      end
+
+      it 'defines getters and setters for named attributes' do
+        TestUser.class_eval do
+          attributes :name, :place
+        end
+
+        u = TestUser.new
+        expect(u.respond_to?(:name)).to eq(true)
+        expect(u.respond_to?(:name=)).to eq(true)
+
+        expect(u.respond_to?(:place)).to eq(true)
+        expect(u.respond_to?(:place=)).to eq(true)
+      end
+
+      it 'adds the attributes to .known_attributes' do
+        TestUser.class_eval do
+          attributes :name, :place
+        end
+
+        expect(TestUser.known_attributes).to contain_exactly(:name, :place)
+      end
+    end
+
+    describe '.known_attributes' do
+      it 'includes attributes from .attributes setup' do
+        expect(User.known_attributes).to contain_exactly(:name)
+      end
+
+      context 'for an inherited model' do
+        it 'includes attributes from parent and child' do
+          expect(AdminUser.known_attributes).to contain_exactly(:special_id, :role, :name)
+        end
+      end
+    end
+
+    describe '.primary_key/primary_key=' do
+      before do
+        klass = Class.new(Drowsy::Model) do
+          self.uri = '/users{/id}'
+          self.connection = C
+        end
+
+        stub_const('TestUser', klass)
+      end
+
+      it 'specifies the attribute managed by id/id=' do
+        TestUser.class_eval do
+          self.primary_key = :something_id
+          self.attributes :something_id
+        end
+
+        u = TestUser.new
+        u.id = 1
+        expect(u.attributes).to match(something_id: 1)
+
+
+        u = TestUser.new(something_id: 1)
+        expect(u.id).to eq(1)
+      end
+    end
   end
 end

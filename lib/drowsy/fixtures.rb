@@ -19,7 +19,7 @@ end
 
 class AdminUser < User
   self.primary_key = :special_id
-  attributes :role
+  attributes :special_id, :role
 end
 
 class Post < Drowsy::Model
