@@ -17,17 +17,39 @@ class Drowsy::Model
   class_attribute :connection, instance_accessor: false
   class_attribute :uri, instance_accessor: false
 
-  # special because it includes .association_names
-  # to support embedded associations in API responsees
+  # support embedded associations in API responsees
+  # by including additional special attribute types
+  # * primary_key
+  # * .association_names
+  # * .association_raw_names
   def self.assignable_attributes
     (
-      [primary_key] + known_attributes + association_names
+      [primary_key] + known_attributes + association_names + association_raw_names
     ).uniq
   end
 
   def assign_attributes(new_attributes)
     # ignore unknown attributes
     super(new_attributes.extract!(*self.class.assignable_attributes))
+  end
+
+  def assign_raw_attributes(raw_attributes)
+    assign_attributes(self.class.translate_raw_attributes(raw_attributes))
+  end
+
+  # load an instance from raw attributes
+  def self.load(raw_attributes)
+    new(**translate_raw_attributes(raw_attributes))
+  end
+
+  def self.translate_raw_attributes(raw_attributes)
+    raw_attributes.each_with_object({}) do |(key, value), memo|
+      if association_names.include?(key)
+        memo[:"raw_#{key}"] = value
+      else
+        memo[key] = value
+      end
+    end
   end
 
   def persisted?
@@ -60,8 +82,14 @@ class Drowsy::Model
 
   def destroy
     run_callbacks :destroy do
-      Drowsy::Persistence.new(self).destroy
+      Drowsy::Persistence.new(self).destroy.tap do |result|
+        @destroyed = destroyed? | result
+      end
     end
+  end
+
+  def destroyed?
+    @destroyed.present?
   end
 
   def hash

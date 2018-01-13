@@ -43,6 +43,17 @@ class FakeJsonApi < Sinatra::Base
   set :show_exceptions, false
   set :raise_errors, true
 
+  get '/users/:id' do
+    if params['id'] == '404'
+      status 404
+      json nil
+    else
+      json(
+        build_user(id: params['id'])
+      )
+    end
+  end
+
   get '/users' do
     json(
       [
@@ -52,6 +63,25 @@ class FakeJsonApi < Sinatra::Base
       ]
     )
   end
+
+  put '/users/:id' do
+    data = MultiJson.load(request.body)
+    if data['name']
+      json(
+        build_user id: params['id'], name: data['name']
+      )
+    else
+      status 422
+      json(
+        errors: {
+          name: [
+            { error: 'blank', message: 'can\'t be blank' },
+          ]
+        }
+      )
+    end
+  end
+
 
   get '/posts' do
     json(
@@ -64,9 +94,14 @@ class FakeJsonApi < Sinatra::Base
   end
 
   get '/posts/:id' do
-    json(
-      build_post(id: params['id'])
-    )
+    if params['id'] == '404'
+      status 404
+      json nil
+    else
+      json(
+        build_post(id: params['id'])
+      )
+    end
   end
 
   put '/posts/:id' do
@@ -113,8 +148,8 @@ class FakeJsonApi < Sinatra::Base
     { id: id, title: "Post #{id}", user_id: user_id, junk: "junk" }
   end
 
-  def build_user(id: rand(1..1000))
-    { id: id, name: "User #{id}", posts: [build_post(user_id: id), build_post(user_id: id)] }
+  def build_user(id: rand(1..1000), name: nil)
+    { id: id, name: name || "User #{id}", posts: [build_post(user_id: id), build_post(user_id: id)] }
   end
 
   %w(get post put patch delete).each do |method|
