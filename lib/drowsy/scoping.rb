@@ -4,7 +4,15 @@ module Drowsy::Scoping
   extend ActiveSupport::Concern
 
   class_methods do
-    delegate :find, :where, :create, to: :all
+    delegate(
+      :find, :find_by, :find_by!,
+      :where,
+      :build,
+      :create, :create!,
+      :destroy_existing,
+      :update_existing,
+      to: :all
+    )
 
     def all
       Drowsy::Relation.new(self)

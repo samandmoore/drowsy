@@ -22,12 +22,34 @@ class Drowsy::Relation
     build(attributes).tap(&:save!)
   end
 
-  def destroy_existing(id); raise NotImplementedError; end
-  def save_existing(id, attributes); raise NotImplementedError; end
-  def update_existing(id, attributes); raise NotImplementedError; end
+  # given an identifer
+  # send a DELETE request to the resource
+  # with the given id.
+  # @return true/false
+  def destroy_existing(id);
+    klass.load(id: id).destroy
+  end
+
+  # given an identifer and attributes
+  # send a PUT request with the attributes for
+  # the resource with the given id.
+  # @return true/false
+  def update_existing(id, attributes)
+    klass.load(attributes.merge(id: id)).save
+  end
 
   def find(id)
-    where(klass.primary_key => id).fetch.first
+    find_by!(klass.primary_key => id)
+  end
+
+  def find_by(attributes)
+    find_by!(attributes)
+  rescue Drowsy::ResourceNotFound
+    nil
+  end
+
+  def find_by!(attributes)
+    where(attributes).fetch.first
   end
 
   def where(conditions)
@@ -64,7 +86,7 @@ class Drowsy::Relation
   end
 
   def new_instance(attributes)
-    klass.new(attributes.merge(_persisted: true))
+    klass.load(attributes)
   end
 
   def perform_http_request(method)
