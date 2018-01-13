@@ -18,6 +18,7 @@ class Drowsy::Associations::BelongsTo < Drowsy::Associations::Base
         end
 
         define_method "#{name}=".freeze do |model|
+          raise Drowsy::Error, "model must be a #{target_klass}" unless model.is_a?(target_klass)
           instance_variable_set(ivar, model)
           send("#{name}_id=", model.id)
         end

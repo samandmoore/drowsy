@@ -16,8 +16,8 @@ class Drowsy::Associations::HasOne < Drowsy::Associations::Base
         end
 
         define_method "#{name}=".freeze do |model|
+          raise Drowsy::Error, "model must be a #{target_klass}" unless model.is_a?(target_klass)
           model.assign_attributes(association.inverse_of_attr_name => self)
-
           instance_variable_set(ivar, model)
         end
 

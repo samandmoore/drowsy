@@ -33,27 +33,20 @@ class Drowsy::Model
     super(new_attributes.extract!(*self.class.assignable_attributes))
   end
 
-  def initialize(_persisted: false, **args)
-    @persisted = _persisted
-    super(**args)
-  end
-
-  # used to load an instance from raw attributes
-  # this method will mark all models as persisted when
-  # building the object graph for the raw attributes
-  def self.load(attributes)
-    result = attributes.each_with_object({}) do |(key, value), memo|
+  # load an instance from raw attributes
+  def self.load(raw_attributes)
+    attrs = raw_attributes.each_with_object({}) do |(key, value), memo|
       if association_names.include?(key)
         memo[:"raw_#{key}"] = value
       else
         memo[key] = value
       end
     end
-    new(_persisted: true, **result)
+    new(**attrs)
   end
 
   def persisted?
-    @persisted.present?
+    id.present?
   end
 
   def save
@@ -61,9 +54,7 @@ class Drowsy::Model
       callback = persisted? ? :update : :create
       run_callbacks callback do
         run_callbacks :save do
-          Drowsy::Persistence.new(self).save.tap do |result|
-            @persisted = persisted? | result
-          end
+          Drowsy::Persistence.new(self).save
         end
       end
     end

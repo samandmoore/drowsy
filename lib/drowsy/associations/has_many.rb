@@ -24,6 +24,7 @@ class Drowsy::Associations::HasMany < Drowsy::Associations::Base
           raise Drowsy::Error, 'models must be an Array' unless models.is_a?(Array)
 
           models.each do |r|
+            raise Drowsy::Error, 'models must be an Array' unless models.is_a?(target_klass)
             r.assign_attributes(association.inverse_of_attr_name => self)
           end
 
