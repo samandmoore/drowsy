@@ -5,7 +5,7 @@ class Drowsy::JsonParser < Faraday::Response::Middleware
   DEFAULT_RESPONSE = '{}'.freeze
 
   def on_complete(env)
-    if json_response?(env) && env.parse_body?
+    if env.parse_body? && json_response?(env)
       env.body = parse_body(env.body)
     end
   end
@@ -28,6 +28,7 @@ class Drowsy::JsonParser < Faraday::Response::Middleware
   end
 
   def json_response?(env)
-    (env.response_headers['content-type'] =~ /\bjson\z/) > -1
+    content_type = env.response_headers['content-type']
+    content_type && (content_type =~ /\bjson\z/) > -1
   end
 end
