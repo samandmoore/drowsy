@@ -140,13 +140,13 @@ PLATFORMS
 
 DEPENDENCIES
   bundler (~> 1.16)
+  drowsy!
   pry
   rake (~> 10.0)
   rspec (~> 3.0)
   rubycritic
   sinatra (>= 1.4)
   sinatra-contrib (>= 1.4)
-  drowsy!
   webmock (~> 2.0)
 
 BUNDLED WITH
