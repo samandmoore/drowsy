@@ -33,16 +33,23 @@ class Drowsy::Model
     super(new_attributes.extract!(*self.class.assignable_attributes))
   end
 
+  def assign_raw_attributes(raw_attributes)
+    assign_attributes(self.class.translate_raw_attributes(raw_attributes))
+  end
+
   # load an instance from raw attributes
   def self.load(raw_attributes)
-    attrs = raw_attributes.each_with_object({}) do |(key, value), memo|
+    new(**translate_raw_attributes(raw_attributes))
+  end
+
+  def self.translate_raw_attributes(raw_attributes)
+    raw_attributes.each_with_object({}) do |(key, value), memo|
       if association_names.include?(key)
         memo[:"raw_#{key}"] = value
       else
         memo[key] = value
       end
     end
-    new(**attrs)
   end
 
   def persisted?

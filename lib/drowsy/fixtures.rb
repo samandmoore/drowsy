@@ -54,7 +54,6 @@ class FakeJsonApi < Sinatra::Base
     end
   end
 
-
   get '/users' do
     json(
       [
@@ -64,6 +63,25 @@ class FakeJsonApi < Sinatra::Base
       ]
     )
   end
+
+  put '/users/:id' do
+    data = MultiJson.load(request.body)
+    if data['name']
+      json(
+        build_user id: params['id'], name: data['name']
+      )
+    else
+      status 422
+      json(
+        errors: {
+          name: [
+            { error: 'blank', message: 'can\'t be blank' },
+          ]
+        }
+      )
+    end
+  end
+
 
   get '/posts' do
     json(
@@ -130,8 +148,8 @@ class FakeJsonApi < Sinatra::Base
     { id: id, title: "Post #{id}", user_id: user_id, junk: "junk" }
   end
 
-  def build_user(id: rand(1..1000))
-    { id: id, name: "User #{id}", posts: [build_post(user_id: id), build_post(user_id: id)] }
+  def build_user(id: rand(1..1000), name: nil)
+    { id: id, name: name || "User #{id}", posts: [build_post(user_id: id), build_post(user_id: id)] }
   end
 
   %w(get post put patch delete).each do |method|

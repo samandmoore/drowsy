@@ -9,7 +9,7 @@ class Drowsy::Persistence
   def save
     method = model.persisted? ? :put : :post
     result = perform_http_request(method)
-    model.assign_attributes(result.data)
+    model.assign_raw_attributes(result.data)
     true
   rescue Drowsy::ResourceInvalid => e
     if e.errors

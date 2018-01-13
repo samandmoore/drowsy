@@ -23,9 +23,9 @@ class Drowsy::Associations::HasMany < Drowsy::Associations::Base
         define_method "#{name}=".freeze do |models|
           raise Drowsy::Error, 'models must be an Array' unless models.is_a?(Array)
 
-          models.each do |r|
-            raise Drowsy::Error, 'models must be an Array' unless models.is_a?(target_klass)
-            r.assign_attributes(association.inverse_of_attr_name => self)
+          models.each do |model|
+            raise Drowsy::Error, "model must be a #{association.target_klass}" unless model.is_a?(association.target_klass)
+            model.assign_attributes(association.inverse_of_attr_name => self)
           end
 
           instance_variable_set(ivar, association.build_proxy(self, models))
