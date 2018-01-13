@@ -1,16 +1,14 @@
 require 'spec_helper'
 
 RSpec.describe Drowsy::Model do
-  let(:connection) do
-    Faraday.new(url: 'https://test.dev') do |c|
+  before do
+    connection = Faraday.new(url: 'https://fake.test') do |c|
       c.request   :json
       c.use       Drowsy::JsonParser
-      c.response  :logger, nil, bodies: true
+      # uncomment for debugging
+      # c.response  :logger, nil, bodies: true
       c.adapter   Faraday.default_adapter
     end
-  end
-
-  before do
     klass = Class.new(Drowsy::Model) do
       self.uri = '/users{/id}'
       self.connection = connection
@@ -104,23 +102,155 @@ RSpec.describe Drowsy::Model do
   end
 
   describe '#save' do
-    context 'for unpersisted records' do
-      it 'performs a POST' do
+    before do
+      TestUser.class_eval do
+        attributes :name
+      end
+    end
 
+    context 'for unpersisted records' do
+      it 'performs an http POST request with attributes' do
+        stub_request(:post, 'https://fake.test/users')
+          .with(body: { name: 'sam' })
+          .to_return(body: {}.to_json, headers: { 'content-type': 'application/json' })
+
+        TestUser.new(name: 'sam').save
+        expect(WebMock).to have_requested(:post, 'https://fake.test/users')
+      end
+    end
+
+    context 'for persisted records' do
+      it 'performs an http PUT request with attributes' do
+        stub_request(:put, 'https://fake.test/users/123')
+          .with(body: { name: 'sam' })
+          .to_return(body: {}.to_json, headers: { 'content-type': 'application/json' })
+
+        TestUser.new(id: 123, name: 'sam').save
+        expect(WebMock).to have_requested(:put, 'https://fake.test/users/123')
+      end
+    end
+
+    context 'with a local validation error' do
+      it 'returns false' do
+        TestUser.class_eval do
+          validates :name, presence: true
+        end
+
+        u = TestUser.new(id: 123)
+        expect(u.save).to eq false
+        expect(u.errors).to include(:name)
+        expect(WebMock).not_to have_requested(:any, %r{https://fake\.test/users})
+      end
+    end
+
+    context 'with a remote validation error' do
+      it 'returns false' do
+        stub_request(:put, 'https://fake.test/users/123')
+          .with(body: { name: nil })
+          .to_return(
+            status: 422,
+            body: {"errors":{"name":[{"error":"blank","message":"can't be blank"}]}}.to_json,
+            headers: { 'content-type': 'application/json' }
+          )
+
+        u = TestUser.new(id: 123)
+
+        expect(u.save).to eq false
+        expect(u.errors).to include(:name)
+        expect(WebMock).to have_requested(:put, 'https://fake.test/users/123')
       end
     end
   end
 
   describe '#save!' do
+    before do
+      TestUser.class_eval do
+        attributes :name
+      end
+    end
+
+    context 'with a local validation error' do
+      it 'raises a Drowsy::ModelInvalid error' do
+        TestUser.class_eval do
+          validates :name, presence: true
+        end
+
+        u = TestUser.new(id: 123)
+        expect { u.save! }.to raise_error(Drowsy::ModelInvalid, /Name can't be blank/)
+        expect(WebMock).not_to have_requested(:any, %r{https://fake\.test/users})
+      end
+    end
+
+    context 'with a remote validation error' do
+      it 'raises a Drowsy::ModelInvalid error' do
+        stub_request(:put, 'https://fake.test/users/123')
+          .with(body: { name: nil })
+          .to_return(
+            status: 422,
+            body: {"errors":{"name":[{"error":"blank","message":"can't be blank"}]}}.to_json,
+            headers: { 'content-type': 'application/json' }
+          )
+
+        u = TestUser.new(id: 123)
+
+        expect { u.save! }.to raise_error(Drowsy::ModelInvalid, /Name can't be blank/)
+        expect(WebMock).to have_requested(:put, 'https://fake.test/users/123')
+      end
+    end
   end
 
-  describe '#update' do
+  describe '#update(attributes)' do
+    before do
+      TestUser.class_eval do
+        attributes :name
+      end
+    end
+
+    it 'applies attributes and then makes an http PUT request and returns true' do
+      stub_request(:put, 'https://fake.test/users/123')
+        .with(body: { name: 'sam' })
+        .to_return(body: {}.to_json, headers: { 'content-type': 'application/json' })
+
+      u = TestUser.new(id: 123)
+      expect(u.update!(name: 'sam')).to eq true
+      expect(WebMock).to have_requested(:put, 'https://fake.test/users/123')
+    end
   end
 
-  describe '#update!' do
+  describe '#update!(attributes)' do
+    before do
+      TestUser.class_eval do
+        attributes :name
+      end
+    end
+
+    context 'with a remote validation error' do
+      it 'raises a Drowsy::ModelInvalid error' do
+        stub_request(:put, 'https://fake.test/users/123')
+          .with(body: { name: nil })
+          .to_return(
+            status: 422,
+            body: {"errors":{"name":[{"error":"blank","message":"can't be blank"}]}}.to_json,
+            headers: { 'content-type': 'application/json' }
+          )
+
+        u = TestUser.new(id: 123)
+
+        expect { u.update!(name: nil) }.to raise_error(Drowsy::ModelInvalid, /Name can't be blank/)
+        expect(WebMock).to have_requested(:put, 'https://fake.test/users/123')
+      end
+    end
   end
 
   describe '#destroy' do
+    it 'performs an http DELETE request' do
+      stub_request(:delete, 'https://fake.test/users/123')
+        .with(body: {})
+        .to_return(status: 204, body: nil, headers: { 'content-type': 'application/json' })
+
+      TestUser.new(id: 123).destroy
+      expect(WebMock).to have_requested(:delete, 'https://fake.test/users/123')
+    end
   end
 
   describe '.find(id)' do

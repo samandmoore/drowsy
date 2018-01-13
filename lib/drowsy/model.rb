@@ -57,12 +57,12 @@ class Drowsy::Model
   end
 
   def save
-    if valid?
-      callback = persisted? ? :update : :create
-      run_callbacks callback do
-        run_callbacks :save do
-          Drowsy::Persistence.new(self).save
-        end
+    return false unless valid?
+
+    callback = persisted? ? :update : :create
+    run_callbacks callback do
+      run_callbacks :save do
+        Drowsy::Persistence.new(self).save
       end
     end
   end

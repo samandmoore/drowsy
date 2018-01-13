@@ -1,5 +1,7 @@
 require 'bundler/setup'
 require 'drowsy'
+require 'webmock'
+require 'webmock/rspec'
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure
@@ -11,4 +13,8 @@ RSpec.configure do |config|
   config.expect_with :rspec do |c|
     c.syntax = :expect
   end
+
+  config.before(:all) { WebMock.disable_net_connect!(allow_localhost: true) }
+  config.after(:all) { WebMock.allow_net_connect! }
+  config.after(:each) { WebMock.reset! }
 end

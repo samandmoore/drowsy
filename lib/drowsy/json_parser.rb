@@ -29,6 +29,6 @@ class Drowsy::JsonParser < Faraday::Response::Middleware
 
   def json_response?(env)
     content_type = env.response_headers['content-type']
-    content_type && (content_type =~ /\bjson\z/) > -1
+    content_type && content_type =~ /\bjson\z/
   end
 end

@@ -1,4 +1,4 @@
-require 'drowsy/fixtures'
+require 'spec_helper'
 
 RSpec.describe Drowsy::Relation do
   describe '.all' do
