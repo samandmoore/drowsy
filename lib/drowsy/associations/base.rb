@@ -7,14 +7,14 @@ class Drowsy::Associations::Base
     @options = options
   end
 
-  def convert(value)
-    case value
+  def convert(raw_value)
+    case raw_value
     when Hash
-      target_klass.new(value)
+      target_klass.load(raw_value)
     when target_klass
-      value
+      raw_value
     else
-      raise Drowsy::Error, "invalid value (#{value.inspect}) assigned to association: #{parent_klass.name}##{name}"
+      raise Drowsy::Error, "invalid value (#{raw_value.inspect}) assigned to association: #{parent_klass.name}##{name}"
     end
   end
 

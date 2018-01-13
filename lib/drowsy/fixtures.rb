@@ -43,6 +43,18 @@ class FakeJsonApi < Sinatra::Base
   set :show_exceptions, false
   set :raise_errors, true
 
+  get '/users/:id' do
+    if params['id'] == '404'
+      status 404
+      json nil
+    else
+      json(
+        build_user(id: params['id'])
+      )
+    end
+  end
+
+
   get '/users' do
     json(
       [
@@ -64,9 +76,14 @@ class FakeJsonApi < Sinatra::Base
   end
 
   get '/posts/:id' do
-    json(
-      build_post(id: params['id'])
-    )
+    if params['id'] == '404'
+      status 404
+      json nil
+    else
+      json(
+        build_post(id: params['id'])
+      )
+    end
   end
 
   put '/posts/:id' do

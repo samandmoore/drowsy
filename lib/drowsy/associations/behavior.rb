@@ -32,6 +32,10 @@ module Drowsy::Associations::Behavior
     def association_names
       associations.keys
     end
+
+    def association_raw_names
+      associations.keys.map { |n| :"raw_#{n}" }
+    end
   end
 
   def associations

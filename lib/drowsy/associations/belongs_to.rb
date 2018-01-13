@@ -13,10 +13,13 @@ class Drowsy::Associations::BelongsTo < Drowsy::Associations::Base
           instance_variable_get(ivar)
         end
 
-        define_method "#{name}=".freeze do |value|
-          converted_value = association.convert(value)
-          instance_variable_set(ivar, converted_value)
-          send("#{name}_id=", converted_value.id)
+        define_method "raw_#{name}=".freeze do |raw_value|
+          send("#{name}=", association.convert(raw_value))
+        end
+
+        define_method "#{name}=".freeze do |model|
+          instance_variable_set(ivar, model)
+          send("#{name}_id=", model.id)
         end
 
         define_method "#{name}_id=".freeze do |value|
@@ -27,7 +30,7 @@ class Drowsy::Associations::BelongsTo < Drowsy::Associations::Base
         end
 
         define_method "build_#{name}" do |attributes = {}|
-          send("#{name}=", m)
+          send("#{name}=", target_klass.new(attributes))
         end
       end
     end

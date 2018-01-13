@@ -17,11 +17,14 @@ class Drowsy::Model
   class_attribute :connection, instance_accessor: false
   class_attribute :uri, instance_accessor: false
 
-  # special because it includes .association_names
-  # to support embedded associations in API responsees
+  # support embedded associations in API responsees
+  # by including additional special attribute types
+  # * primary_key
+  # * .association_names
+  # * .association_raw_names
   def self.assignable_attributes
     (
-      [primary_key] + known_attributes + association_names
+      [primary_key] + known_attributes + association_names + association_raw_names
     ).uniq
   end
 
@@ -30,8 +33,27 @@ class Drowsy::Model
     super(new_attributes.extract!(*self.class.assignable_attributes))
   end
 
+  def initialize(_persisted: false, **args)
+    @persisted = _persisted
+    super(**args)
+  end
+
+  # used to load an instance from raw attributes
+  # this method will mark all models as persisted when
+  # building the object graph for the raw attributes
+  def self.load(attributes)
+    result = attributes.each_with_object({}) do |(key, value), memo|
+      if association_names.include?(key)
+        memo[:"raw_#{key}"] = value
+      else
+        memo[key] = value
+      end
+    end
+    new(_persisted: true, **result)
+  end
+
   def persisted?
-    id.present?
+    @persisted.present?
   end
 
   def save
@@ -39,7 +61,9 @@ class Drowsy::Model
       callback = persisted? ? :update : :create
       run_callbacks callback do
         run_callbacks :save do
-          Drowsy::Persistence.new(self).save
+          Drowsy::Persistence.new(self).save.tap do |result|
+            @persisted = persisted? | result
+          end
         end
       end
     end
@@ -60,8 +84,14 @@ class Drowsy::Model
 
   def destroy
     run_callbacks :destroy do
-      Drowsy::Persistence.new(self).destroy
+      Drowsy::Persistence.new(self).destroy.tap do |result|
+        @destroyed = destroyed? | result
+      end
     end
+  end
+
+  def destroyed?
+    @destroyed.present?
   end
 
   def hash

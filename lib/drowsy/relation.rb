@@ -64,7 +64,7 @@ class Drowsy::Relation
   end
 
   def new_instance(attributes)
-    klass.new(attributes)
+    klass.new(attributes.merge(_persisted: true))
   end
 
   def perform_http_request(method)
