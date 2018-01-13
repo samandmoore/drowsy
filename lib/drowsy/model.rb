@@ -2,8 +2,9 @@ require 'active_model'
 require 'drowsy/attributes'
 require 'drowsy/scoping'
 require 'drowsy/associations'
-require 'drowsy/persistence'
 require 'drowsy/model_inspector'
+require 'drowsy/save_operation'
+require 'drowsy/destroy_operation'
 
 class Drowsy::Model
   extend ActiveModel::Callbacks
@@ -24,7 +25,7 @@ class Drowsy::Model
   # * .association_raw_names
   def self.assignable_attributes
     (
-      [:id] + [primary_key] + known_attributes + association_names + association_raw_names
+      [:id, primary_key] + known_attributes + association_names + association_raw_names
     ).uniq
   end
 
@@ -62,7 +63,7 @@ class Drowsy::Model
     callback = persisted? ? :update : :create
     run_callbacks callback do
       run_callbacks :save do
-        Drowsy::Persistence.new(self).save
+        Drowsy::SaveOperation.new(self).perform
       end
     end
   end
@@ -82,7 +83,7 @@ class Drowsy::Model
 
   def destroy
     run_callbacks :destroy do
-      Drowsy::Persistence.new(self).destroy.tap do |result|
+      Drowsy::DestroyOperation.new(self).perform.tap do |result|
         @destroyed = destroyed? | result
       end
     end

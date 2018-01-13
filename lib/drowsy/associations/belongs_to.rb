@@ -4,10 +4,10 @@ class Drowsy::Associations::BelongsTo < Drowsy::Associations::Base
   def attach
     self.tap do |association|
       name = association.name
-      ivar = "@#{association.name}".freeze
+      ivar = "@#{name}".freeze
 
       parent_klass.class_eval do
-        attributes("#{association.name}_id".to_sym)
+        attributes("#{name}_id".to_sym)
 
         define_method name do
           instance_variable_get(ivar)
