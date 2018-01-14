@@ -1,6 +1,6 @@
-require 'drowsy/associations/base'
+require 'drowsy/association/base'
 
-class Drowsy::Associations::HasMany < Drowsy::Associations::Base
+class Drowsy::Association::HasMany < Drowsy::Association::Base
   def attach
     self.tap do |association|
       name = association.name

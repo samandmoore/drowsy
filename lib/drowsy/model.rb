@@ -10,7 +10,7 @@ class Drowsy::Model
   include ActiveModel::Model
   include Drowsy::Attributes
   include Drowsy::Scoping
-  include Drowsy::Associations::Behavior
+  include Drowsy::Associations
 
   define_model_callbacks :create, :update, :save, :destroy
 

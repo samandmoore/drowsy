@@ -1,6 +1,6 @@
 require 'drowsy/model_helper'
 
-class Drowsy::Associations::Base
+class Drowsy::Association::Base
   attr_reader :parent_klass, :name, :options
 
   def initialize(parent_klass, name, options)
