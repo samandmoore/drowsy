@@ -24,10 +24,4 @@ RSpec.describe Drowsy::Relation do
 
   describe '.create!(attributes)' do
   end
-
-  describe '.destroy_existing(id)' do
-  end
-
-  describe '.update_existing(id, attributes)' do
-  end
 end

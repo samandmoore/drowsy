@@ -24,22 +24,6 @@ class Drowsy::Relation
     build(attributes).tap(&:save!)
   end
 
-  # given an identifer
-  # send a DELETE request to the resource
-  # with the given id.
-  # @return true/false
-  def destroy_existing(id)
-    klass.new(id: id).destroy
-  end
-
-  # given an identifer and attributes
-  # send a PUT request with the attributes for
-  # the resource with the given id.
-  # @return true/false
-  def update_existing(id, attributes)
-    klass.new(attributes.merge(id: id)).save
-  end
-
   def find(id)
     find_by!(klass.primary_key => id)
   end

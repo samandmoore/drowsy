@@ -277,6 +277,12 @@ RSpec.describe Drowsy::Model do
     end
   end
 
+  describe '.destroy_existing(id)' do
+  end
+
+  describe '.update_existing(id, attributes)' do
+  end
+
   describe 'class definition methods' do
     describe '.attributes(names)' do
       it 'defines getters and setters for named attributes' do

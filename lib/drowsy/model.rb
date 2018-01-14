@@ -17,6 +17,22 @@ class Drowsy::Model
   class_attribute :connection, instance_accessor: false
   class_attribute :uri, instance_accessor: false
 
+  # given an identifer
+  # send a DELETE request to the resource
+  # with the given id.
+  # @return true/false
+  def self.destroy_existing(id)
+    new(id: id).destroy
+  end
+
+  # given an identifer and attributes
+  # send a PUT request with the attributes for
+  # the resource with the given id.
+  # @return true/false
+  def self.update_existing(id, attributes)
+    new(attributes.merge(id: id)).save
+  end
+
   # support embedded associations in API responsees
   # by including additional special attribute types
   # * primary_key
