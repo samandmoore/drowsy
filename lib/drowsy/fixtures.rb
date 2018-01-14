@@ -29,14 +29,14 @@ class Post < Drowsy::Model
   attributes :title
 end
 
-require 'active_support/subscriber'
-class DrowsyRequestSubscriber < ActiveSupport::Subscriber
-  attach_to 'drowsy'
+# require 'active_support/subscriber'
+# class DrowsyRequestSubscriber < ActiveSupport::Subscriber
+#   attach_to 'drowsy'
 
-  def request(event)
-    puts "#{event.payload.inspect}, #{event.duration}"
-  end
-end
+#   def request(event)
+#     puts "#{event.payload.inspect}, #{event.duration}"
+#   end
+# end
 
 class FakeJsonApi < Sinatra::Base
   set :dump_errors, false

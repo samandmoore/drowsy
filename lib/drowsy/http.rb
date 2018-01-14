@@ -2,11 +2,13 @@ require 'active_support/notifications'
 require 'faraday'
 
 class Drowsy::Http
+  METHODS = %i(get post put patch delete).freeze
+
   def initialize(connection)
     @connection = connection
   end
 
-  %i(get post put patch delete).each do |method|
+  METHODS.each do |method|
     define_method(method) do |*args|
       request(method, *args)
     end

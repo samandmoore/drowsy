@@ -82,6 +82,8 @@ class Drowsy::Model
   end
 
   def destroy
+    return false unless valid?
+
     run_callbacks :destroy do
       Drowsy::DestroyOperation.new(self).perform.tap do |result|
         @destroyed = destroyed? | result

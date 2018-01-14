@@ -12,6 +12,10 @@ module Drowsy
       response.status
     end
 
+    def to_s
+      "Request Failed.  HTTP status code:  #{status}."
+    end
+
     private
 
     attr_reader :response

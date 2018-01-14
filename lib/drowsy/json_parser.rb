@@ -5,8 +5,13 @@ class Drowsy::JsonParser < Faraday::Response::Middleware
   DEFAULT_RESPONSE = '{}'.freeze
 
   def on_complete(env)
+    # stash the body for debugging
+    env[:raw_body] = env.body
+
     if env.parse_body? && json_response?(env)
       env.body = parse_body(env.body)
+    else
+      env.body = { data: {} }
     end
   end
 
