@@ -1,3 +1,5 @@
+require 'drowsy/model_helper'
+
 class Drowsy::Associations::Base
   attr_reader :parent_klass, :name, :options
 
@@ -10,7 +12,7 @@ class Drowsy::Associations::Base
   def convert(raw_value)
     case raw_value
     when Hash
-      target_klass.load(raw_value)
+      Drowsy::ModelHelper.construct(target_klass, raw_value)
     when target_klass
       raw_value
     else

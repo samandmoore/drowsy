@@ -1,3 +1,4 @@
+require 'drowsy/model_helper'
 require 'drowsy/http_request'
 
 class Drowsy::SaveOperation
@@ -8,7 +9,7 @@ class Drowsy::SaveOperation
 
   def perform
     result = perform_http_request
-    model.assign_raw_attributes(result.data)
+    Drowsy::ModelHelper.assign_raw_attributes(model, result.data)
     true
   rescue Drowsy::ResourceInvalid => e
     add_errors_to_model(e.errors) if e.errors
