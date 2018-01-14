@@ -25,7 +25,7 @@ class Drowsy::FetchOperation
   end
 
   def new_instance(attributes)
-    ModelHelper.construct(relation.klass, attributes)
+    Drowsy::ModelHelper.construct(relation.klass, attributes)
   end
 
   def perform_http_request

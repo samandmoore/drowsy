@@ -3,6 +3,8 @@ require 'drowsy/fetch_operation'
 class Drowsy::Relation
   include Enumerable
 
+  attr_reader :klass
+
   delegate :to_ary, :[], :any?, :empty?, :last, :size, :each, to: :fetch
 
   def initialize(klass)
@@ -49,7 +51,7 @@ class Drowsy::Relation
   end
 
   def inspect
-    "#<Drowsy::Relation[#{klass}](#{uri_template}) #{params.map { |k, v| "#{k}: #{v.inspect}" }.join(' ')}>"
+    "#<Drowsy::Relation[#{klass}](#{uri_template})#{params.map { |k, v| " #{k}: #{v.inspect}" }.join('')}>"
   end
 
   protected
@@ -62,5 +64,5 @@ class Drowsy::Relation
 
   private
 
-  attr_reader :klass, :connection, :uri_template, :params
+  attr_reader :connection, :uri_template, :params
 end

@@ -2,7 +2,7 @@ require 'webmock'
 require 'sinatra/base'
 require 'sinatra/json'
 
-C = Faraday.new(url: 'https://test.dev') do |c|
+C = Faraday.new(url: 'https://username:password@test.dev') do |c|
   c.request   :json
   c.use       Drowsy::JsonParser
   c.response  :logger, nil, bodies: true

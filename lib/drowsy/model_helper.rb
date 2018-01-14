@@ -4,7 +4,7 @@ module Drowsy::ModelHelper
   end
 
   def self.construct(klass, raw_attributes)
-    klass.new(**translate_raw_attributes(raw_attributes))
+    klass.new(**translate_raw_attributes(klass, raw_attributes))
   end
 
   # re-positions associations in raw attributes for
