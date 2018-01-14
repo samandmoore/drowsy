@@ -29,11 +29,6 @@ class Drowsy::FetchOperation
   end
 
   def perform_http_request
-    Drowsy::HttpRequest.new(
-      relation.connection,
-      :get,
-      relation.uri_template,
-      relation.params
-    ).result
+    relation.to_http_request.result
   end
 end

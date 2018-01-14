@@ -3,8 +3,6 @@ require 'drowsy/fetch_operation'
 class Drowsy::Relation
   include Enumerable
 
-  attr_reader :klass, :connection, :uri_template, :params
-
   delegate :to_ary, :[], :any?, :empty?, :last, :size, :each, to: :fetch
 
   def initialize(klass)
@@ -62,6 +60,10 @@ class Drowsy::Relation
     end
   end
 
+  def to_http_request
+    Drowsy::HttpRequest.new(connection, :get, uri_template, params)
+  end
+
   def inspect
     "#<Drowsy::Relation[#{klass}](#{uri_template}) #{params.map { |k, v| "#{k}: #{v.inspect}" }.join(' ')}>"
   end
@@ -73,4 +75,8 @@ class Drowsy::Relation
   def fetch
     @fetch ||= Drowsy::FetchOperation.new(self).perform
   end
+
+  private
+
+  attr_reader :klass, :connection, :uri_template, :params
 end

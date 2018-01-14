@@ -82,7 +82,7 @@ class Drowsy::Model
   def ==(other)
     other.instance_of?(self.class) && id.present? && id == other.id
   end
-  alias :eql? :==
+  alias eql? ==
 
   def inspect
     Drowsy::ModelInspector.inspect(self)
