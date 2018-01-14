@@ -9,8 +9,6 @@ module Drowsy::Scoping
       :where,
       :build,
       :create, :create!,
-      :destroy_existing,
-      :update_existing,
       to: :all
     )
 
