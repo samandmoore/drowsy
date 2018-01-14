@@ -1,5 +1,9 @@
+require 'drowsy/fetch_operation'
+
 class Drowsy::Relation
   include Enumerable
+
+  attr_reader :klass, :connection, :uri_template, :params
 
   delegate :to_ary, :[], :any?, :empty?, :last, :size, :each, to: :fetch
 
@@ -26,7 +30,7 @@ class Drowsy::Relation
   # send a DELETE request to the resource
   # with the given id.
   # @return true/false
-  def destroy_existing(id);
+  def destroy_existing(id)
     klass.load(id: id).destroy
   end
 
@@ -58,38 +62,15 @@ class Drowsy::Relation
     end
   end
 
+  def inspect
+    "#<Drowsy::Relation[#{klass}](#{uri_template}) #{params.map { |k, v| "#{k}: #{v.inspect}" }.join(' ')}>"
+  end
+
   protected
 
-  attr_accessor :params
+  attr_writer :params
 
   def fetch
-    @fetch ||= new_collection_from_result(perform_http_request(:get))
-  end
-
-  private
-
-  attr_reader :klass, :connection, :uri_template
-
-  def uri
-    @uri ||= Drowsy::Uri.new(uri_template, params)
-  end
-
-  def new_collection_from_result(result)
-    case result.data
-    when Array
-      result.data.map { |d| new_instance(d) }
-    when Hash
-      [new_instance(result.data)]
-    else
-      raise Drowsy::ResponseError.new(result.response), 'Invalid response format'
-    end
-  end
-
-  def new_instance(attributes)
-    klass.load(attributes)
-  end
-
-  def perform_http_request(method)
-    Drowsy::Http.new(connection).request(method, uri.path.to_s, params: params.except(*uri.variables))
+    @fetch ||= Drowsy::FetchOperation.new(self).perform
   end
 end

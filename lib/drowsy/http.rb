@@ -40,6 +40,10 @@ class Drowsy::Http
     end
   end
 
+  def inspect
+    "#<Drowsy::Http(#{connection.url_prefix})>"
+  end
+
   private
 
   attr_reader :connection
