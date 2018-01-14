@@ -1,8 +1,11 @@
 require 'bundler/setup'
+if ENV.key? 'COVERAGE'
+  require 'simplecov'
+  SimpleCov.start
+end
 require 'drowsy'
 require 'webmock'
 require 'webmock/rspec'
-
 require File.join(__dir__, 'support/model_test_helpers')
 
 RSpec.configure do |config|

@@ -44,4 +44,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'sinatra-contrib', '>= 1.4'
   spec.add_development_dependency 'rubycritic'
   spec.add_development_dependency 'guard-rspec'
+  spec.add_development_dependency 'simplecov'
 end
