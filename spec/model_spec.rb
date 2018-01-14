@@ -103,6 +103,11 @@ RSpec.describe Drowsy::Model do
 
       expect(TestUser.new(id: 1)).not_to eq(TestPost.new(id: 1))
     end
+
+    it 'uses id for #hash' do
+      expect(TestUser.new(id: 1).hash).to eq(1.hash)
+      expect(TestUser.new(id: 'abc').hash).to eq('abc'.hash)
+    end
   end
 
   describe '#save' do
