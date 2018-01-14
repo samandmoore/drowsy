@@ -31,7 +31,7 @@ class Drowsy::Relation
   # with the given id.
   # @return true/false
   def destroy_existing(id)
-    klass.load(id: id).destroy
+    klass.new(id: id).destroy
   end
 
   # given an identifer and attributes
@@ -39,7 +39,7 @@ class Drowsy::Relation
   # the resource with the given id.
   # @return true/false
   def update_existing(id, attributes)
-    klass.load(attributes.merge(id: id)).save
+    klass.new(attributes.merge(id: id)).save
   end
 
   def find(id)
