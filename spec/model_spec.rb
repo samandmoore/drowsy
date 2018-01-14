@@ -2,18 +2,7 @@ require 'spec_helper'
 
 RSpec.describe Drowsy::Model do
   before do
-    connection = Faraday.new(url: 'https://fake.test') do |c|
-      c.request   :json
-      c.use       Drowsy::JsonParser
-      # uncomment for debugging
-      # c.response  :logger, nil, bodies: true
-      c.adapter   Faraday.default_adapter
-    end
-    klass = Class.new(Drowsy::Model) do
-      self.uri = '/users{/id}'
-      self.connection = connection
-    end
-    stub_const('TestUser', klass)
+    define_model('TestUser', uri: '/users{/id}')
   end
 
   describe '#initialize' do
@@ -98,6 +87,21 @@ RSpec.describe Drowsy::Model do
       expect(u.special_id).to eq(2)
 
       expect(u.attributes).to include(special_id: 2)
+    end
+  end
+
+  describe 'equality' do
+    before do
+      define_model('TestPost', uri: '/posts{/id}')
+    end
+
+    specify 'objects are equal based on type and id' do
+      expect(TestUser.new(id: 1)).to eq(TestUser.new(id: 1))
+      expect(TestPost.new(id: 2)).to eq(TestPost.new(id: 2))
+
+      expect(TestUser.new(id: 1)).not_to eq(TestUser.new(id: 2))
+
+      expect(TestUser.new(id: 1)).not_to eq(TestPost.new(id: 1))
     end
   end
 

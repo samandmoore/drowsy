@@ -3,6 +3,8 @@ require 'drowsy'
 require 'webmock'
 require 'webmock/rspec'
 
+require File.join(__dir__, 'support/model_test_helpers')
+
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure
   config.example_status_persistence_file_path = '.rspec_status'
@@ -14,7 +16,12 @@ RSpec.configure do |config|
     c.syntax = :expect
   end
 
+  config.order = :random
+  Kernel.srand config.seed
+
   config.before(:all) { WebMock.disable_net_connect!(allow_localhost: true) }
   config.after(:all) { WebMock.allow_net_connect! }
   config.after(:each) { WebMock.reset! }
+
+  config.include ModelTestHelpers
 end
