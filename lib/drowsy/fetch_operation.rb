@@ -1,3 +1,5 @@
+require 'drowsy/http_request'
+
 class Drowsy::FetchOperation
   def initialize(relation)
     @relation = relation
@@ -27,11 +29,11 @@ class Drowsy::FetchOperation
   end
 
   def perform_http_request
-    Drowsy::HttpOperation.new(
+    Drowsy::HttpRequest.new(
       relation.connection,
       :get,
       relation.uri_template,
       relation.params
-    ).perform
+    ).result
   end
 end

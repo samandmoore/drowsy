@@ -1,4 +1,4 @@
-require 'drowsy/http_operation'
+require 'drowsy/http_request'
 
 class Drowsy::DestroyOperation
   def initialize(model)
@@ -15,11 +15,11 @@ class Drowsy::DestroyOperation
   attr_reader :model
 
   def perform_http_request
-    Drowsy::HttpOperation.new(
+    Drowsy::HttpRequest.new(
       model.class.connection,
       :delete,
       model.class.uri,
       { model.class.primary_key => model.id }
-    ).perform
+    ).result
   end
 end

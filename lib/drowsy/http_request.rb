@@ -1,7 +1,7 @@
 require 'drowsy/uri'
 require 'drowsy/http'
 
-class Drowsy::HttpOperation
+class Drowsy::HttpRequest
   def initialize(connection, method, uri_template, params)
     @connection = connection
     @method = method
@@ -9,8 +9,8 @@ class Drowsy::HttpOperation
     @params = params
   end
 
-  def perform
-    http_connection.request(
+  def result
+    http.request(
       method,
       uri.path.to_s,
       params: params.except(*uri.variables)
@@ -21,8 +21,8 @@ class Drowsy::HttpOperation
 
   attr_reader :connection, :method, :uri_template, :params
 
-  def http_connection
-    @http_connection ||= Drowsy::Http.new(connection)
+  def http
+    @http ||= Drowsy::Http.new(connection)
   end
 
   def uri

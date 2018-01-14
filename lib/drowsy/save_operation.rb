@@ -1,4 +1,4 @@
-require 'drowsy/http_operation'
+require 'drowsy/http_request'
 
 class Drowsy::SaveOperation
   def initialize(model, http_method_override: nil)
@@ -20,12 +20,12 @@ class Drowsy::SaveOperation
   attr_reader :model
 
   def perform_http_request
-    Drowsy::HttpOperation.new(
+    Drowsy::HttpRequest.new(
       model.class.connection,
       http_method,
       model.class.uri,
       model.attributes
-    ).perform
+    ).result
   end
 
   def http_method
