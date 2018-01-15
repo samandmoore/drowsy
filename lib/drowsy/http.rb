@@ -37,6 +37,9 @@ class Drowsy::Http
 
         Result.new handle_response(response)
       rescue Faraday::ConnectionFailed, Faraday::TimeoutError, Faraday::SSLError => e
+        # TODO: consider whether this should raise different error types for
+        # opentimeout + connection error vs. readtimeout errors
+        # https://github.com/lostisland/faraday/issues/718#issuecomment-344956036
         raise Drowsy::ConnectionError, e
       end
     end

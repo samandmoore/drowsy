@@ -25,7 +25,7 @@ RSpec.describe Drowsy::Relation do
       stub_request(:get, 'https://fake.test/users?name=foo')
         .to_return(body: [].to_json, headers: { 'content-type': 'application/json' })
 
-      result = TestUser.all.where(name: 'foo').to_a
+      TestUser.all.where(name: 'foo').to_a
 
       expect(WebMock).to have_requested(:get, 'https://fake.test/users?name=foo')
     end
