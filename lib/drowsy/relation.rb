@@ -21,7 +21,7 @@ class Drowsy::Relation
       where(params)
         .with_http_method(http_method)
         .with_uri(uri_template)
-        .to_a
+        .fetch
     end
   end
 
@@ -48,7 +48,7 @@ class Drowsy::Relation
   end
 
   def find_by!(attributes)
-    where(attributes).fetch.first
+    Array(where(attributes).fetch).first
   end
 
   def where(conditions)

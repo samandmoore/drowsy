@@ -93,7 +93,7 @@ class Drowsy::Model
     return false unless valid?
 
     run_callbacks :destroy do
-      _save(http_method_override: :delete).perform.tap do |result|
+      _save(http_method_override: :delete).tap do |result|
         @destroyed = destroyed? | result
       end
     end
