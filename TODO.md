@@ -16,19 +16,25 @@ Features to add:
 - [ ] add .scope behavior
 - [ ] add http failure fallback behavior
 - [ ] semian integration/adapter
-- [ ] add Model#${http_method}
-- [ ] add Model.${http_method}
+- [x] add Model#${http_method}
+- [x] add Model.${http_method}
 
 **Examples of Model#${http_method} and Model.${http_method}**
 The class methods should be chainable on Relations and available
 on the class itself.
 ```
 # PUT /users/123/deactivate
-User.new(id: 123).put('deactivate', reason: 'too much nagging')
+User.new(id: 123).put(:deactivate, reason: 'too much nagging')
 
 # GET /users/popular?page=2
-User.get('popular', page: 2)
+User.get(:popular, page: 2)
 
 # GET /posts/popular?commented=true&page=2
-Post.where(commented: true, page: 2).get('popular')
+Post.where(commented: true, page: 2).get(:popular)
+
+# GET /popular_users?page=2
+User.get('/popular_users', page: 2)
+
+# symbols are added as segments on the baseline uri_template
+# strings are treated as replacement uri_templates
 ```

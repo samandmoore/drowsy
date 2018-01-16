@@ -53,13 +53,25 @@ class Drowsy::Model
     id.present?
   end
 
+  # defines get, put, post, patch, delete
+  Drowsy::Http::METHODS.each do |http_method|
+    define_method http_method do |uri_template = nil, **params|
+      uri = Drowsy::Uri.join_or_replace(self.class.uri, uri_template)
+      _save(
+        http_method_override: http_method,
+        uri_template_override: uri,
+        additional_params: params
+      )
+    end
+  end
+
   def save
     return false unless valid?
 
     callback = persisted? ? :update : :create
     run_callbacks callback do
       run_callbacks :save do
-        Drowsy::SaveOperation.new(self).perform
+        _save
       end
     end
   end
@@ -81,7 +93,7 @@ class Drowsy::Model
     return false unless valid?
 
     run_callbacks :destroy do
-      Drowsy::SaveOperation.new(self, http_method_override: :delete).perform.tap do |result|
+      _save(http_method_override: :delete).perform.tap do |result|
         @destroyed = destroyed? | result
       end
     end
@@ -102,5 +114,11 @@ class Drowsy::Model
 
   def inspect
     Drowsy::ModelInspector.inspect(self)
+  end
+
+  private
+
+  def _save(**args)
+    Drowsy::SaveOperation.new(self, **args).perform
   end
 end

@@ -82,7 +82,6 @@ class FakeJsonApi < Sinatra::Base
     end
   end
 
-
   get '/posts' do
     json(
       [
