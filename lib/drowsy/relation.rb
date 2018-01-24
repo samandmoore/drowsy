@@ -11,7 +11,18 @@ class Drowsy::Relation
     @klass = klass
     @connection = klass.connection
     @uri_template = klass.uri
+    @http_method = :get
     @params = {}
+  end
+
+  # defines get, put, post, patch, delete
+  Drowsy::Http::METHODS.each do |http_method|
+    define_method http_method do |uri_template = nil, **params|
+      where(params)
+        .with_http_method(http_method)
+        .with_uri(uri_template)
+        .fetch
+    end
   end
 
   def build(attributes = {})
@@ -37,7 +48,7 @@ class Drowsy::Relation
   end
 
   def find_by!(attributes)
-    where(attributes).fetch.first
+    Array(where(attributes).fetch).first
   end
 
   def where(conditions)
@@ -46,8 +57,20 @@ class Drowsy::Relation
     end
   end
 
+  def with_http_method(http_method)
+    clone.tap do |r|
+      r.http_method = http_method
+    end
+  end
+
+  def with_uri(uri)
+    clone.tap do |r|
+      r.uri_template = Drowsy::Uri.join_or_replace(uri_template, uri)
+    end
+  end
+
   def to_http_request
-    Drowsy::HttpRequest.new(connection, :get, uri_template, params)
+    Drowsy::HttpRequest.new(connection, http_method, uri_template, params)
   end
 
   def inspect
@@ -56,7 +79,7 @@ class Drowsy::Relation
 
   protected
 
-  attr_writer :params
+  attr_writer :params, :http_method, :uri_template
 
   def fetch
     @fetch ||= Drowsy::FetchOperation.new(self).perform
@@ -64,5 +87,5 @@ class Drowsy::Relation
 
   private
 
-  attr_reader :connection, :uri_template, :params
+  attr_reader :connection, :params, :http_method, :uri_template
 end

@@ -6,19 +6,19 @@ class Drowsy::FetchOperation
   end
 
   def perform
-    new_collection_from_result(perform_http_request)
+    new_instance_or_collection_from_result(perform_http_request)
   end
 
   private
 
   attr_reader :relation
 
-  def new_collection_from_result(result)
+  def new_instance_or_collection_from_result(result)
     case result.data
     when Array
-      result.data.map { |d| new_instance(d) }
+      new_collection(result.data)
     when Hash
-      [new_instance(result.data)]
+      new_instance(result.data)
     else
       raise Drowsy::ResponseError.new(result.response), 'Invalid response format'
     end
@@ -26,6 +26,10 @@ class Drowsy::FetchOperation
 
   def new_instance(attributes)
     Drowsy::ModelHelper.construct(relation.klass, attributes)
+  end
+
+  def new_collection(data)
+    data.map { |d| new_instance(d) }
   end
 
   def perform_http_request
