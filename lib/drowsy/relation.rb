@@ -3,7 +3,7 @@ require 'drowsy/fetch_operation'
 class Drowsy::Relation
   include Enumerable
 
-  attr_reader :klass
+  attr_reader :klass, :params
 
   delegate :to_ary, :[], :any?, :empty?, :last, :size, :each, to: :fetch
 
@@ -74,7 +74,11 @@ class Drowsy::Relation
   end
 
   def method_missing(name, *args, &block)
-    instance_exec(*args, &klass.scope_for(name)) if klass.has_scope?(name)
+    if klass.has_scope?(name)
+      instance_exec(*args, &klass.scope_for(name))
+    else
+      super
+    end
   end
 
   def respond_to?(name, include_private = false)
@@ -95,5 +99,5 @@ class Drowsy::Relation
 
   private
 
-  attr_reader :connection, :params, :http_method, :uri_template
+  attr_reader :connection, :http_method, :uri_template
 end

@@ -17,10 +17,10 @@ module Drowsy::Scoping
       to: :all
     )
 
-    def scope(name, &block)
+    def scope(name, behavior)
       # use reassignment to ensure that child classes don't add to parent
-      self.scopes = self.scopes.merge(name => block)
-      define_singleton_method name, block
+      self.scopes = self.scopes.merge(name => behavior)
+      define_singleton_method name, behavior
     end
 
     def has_scope?(name)
