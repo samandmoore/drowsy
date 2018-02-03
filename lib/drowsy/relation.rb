@@ -73,6 +73,14 @@ class Drowsy::Relation
     Drowsy::HttpRequest.new(connection, http_method, uri_template, params)
   end
 
+  def method_missing(name, *args, &block)
+    instance_exec(*args, &klass.scope_for(name)) if klass.has_scope?(name)
+  end
+
+  def respond_to?(name, include_private = false)
+    klass.has_scope?(name) || super
+  end
+
   def inspect
     "#<Drowsy::Relation[#{klass}](#{uri_template})#{params.map { |k, v| " #{k}: #{v.inspect}" }.join('')}>"
   end
