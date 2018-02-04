@@ -9,9 +9,9 @@ module ModelTestHelpers
     end
   end
 
-  def define_model(name, uri:, &block)
+  def define_model(name, uri:, parent_klass: Drowsy::Model, &block)
     connection = self.connection
-    klass = Class.new(Drowsy::Model) do
+    klass = Class.new(parent_klass) do
       self.uri = uri
       self.connection = connection
     end

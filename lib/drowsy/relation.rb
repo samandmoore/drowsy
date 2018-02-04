@@ -3,7 +3,7 @@ require 'drowsy/fetch_operation'
 class Drowsy::Relation
   include Enumerable
 
-  attr_reader :klass
+  attr_reader :klass, :params
 
   delegate :to_ary, :[], :any?, :empty?, :last, :size, :each, to: :fetch
 
@@ -23,6 +23,10 @@ class Drowsy::Relation
         .with_uri(uri_template)
         .fetch
     end
+  end
+
+  def all
+    self
   end
 
   def build(attributes = {})
@@ -87,5 +91,5 @@ class Drowsy::Relation
 
   private
 
-  attr_reader :connection, :params, :http_method, :uri_template
+  attr_reader :connection, :http_method, :uri_template
 end

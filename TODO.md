@@ -13,7 +13,7 @@ Features to add:
 - [x] associations
 - [x] ignore unknown attributes
 - [ ] attribute dirty tracking
-- [ ] add .scope behavior
+- [x] add .scope behavior
 - [ ] add http failure fallback behavior
 - [ ] semian integration/adapter
 - [x] add Model#${http_method}
