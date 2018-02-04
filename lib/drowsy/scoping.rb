@@ -1,4 +1,5 @@
 require 'drowsy/relation'
+require 'drowsy/http'
 
 module Drowsy::Scoping
   extend ActiveSupport::Concern
@@ -9,6 +10,7 @@ module Drowsy::Scoping
       :where,
       :build,
       :create, :create!,
+      *Drowsy::Http::METHODS,
       to: :all
     )
 
