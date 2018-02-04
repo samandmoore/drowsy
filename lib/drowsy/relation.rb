@@ -81,7 +81,7 @@ class Drowsy::Relation
     end
   end
 
-  def respond_to?(name, include_private = false)
+  def respond_to_missing?(name, include_private = false)
     klass.has_scope?(name) || super
   end
 
