@@ -25,6 +25,10 @@ class Drowsy::Relation
     end
   end
 
+  def all
+    self
+  end
+
   def build(attributes = {})
     klass.new(params.merge(attributes))
   end
@@ -71,18 +75,6 @@ class Drowsy::Relation
 
   def to_http_request
     Drowsy::HttpRequest.new(connection, http_method, uri_template, params)
-  end
-
-  def method_missing(name, *args, &block)
-    if klass.has_scope?(name)
-      instance_exec(*args, &klass.scope_for(name))
-    else
-      super
-    end
-  end
-
-  def respond_to_missing?(name, include_private = false)
-    klass.has_scope?(name) || super
   end
 
   def inspect
