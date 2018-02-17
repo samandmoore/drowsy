@@ -56,19 +56,19 @@ class Drowsy::Relation
   end
 
   def where(conditions)
-    clone.tap do |r|
+    chain do |r|
       r.params = params.merge(conditions)
     end
   end
 
   def with_http_method(http_method)
-    clone.tap do |r|
+    chain do |r|
       r.http_method = http_method
     end
   end
 
   def with_uri(uri)
-    clone.tap do |r|
+    chain do |r|
       r.uri_template = Drowsy::Uri.join_or_replace(uri_template, uri)
     end
   end
@@ -87,6 +87,17 @@ class Drowsy::Relation
 
   def fetch
     @fetch ||= Drowsy::FetchOperation.new(self).perform
+  end
+
+  def clear_result!
+    @fetch = nil
+  end
+
+  def chain
+    clone.tap do |relation|
+      relation.clear_result!
+      yield relation
+    end
   end
 
   private
