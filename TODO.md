@@ -16,5 +16,6 @@ Features to add:
 - [x] add .scope behavior
 - [ ] add http failure fallback behavior
 - [ ] semian integration/adapter
+- [ ] add request identifier header for tracing
 - [x] add Model#${http_method}
 - [x] add Model.${http_method}
