@@ -4,12 +4,16 @@ module Drowsy
   class ConnectionError < Error; end
 
   class ResponseError < Error
-    def initialize(response)
-      @response = response
+    def initialize(result)
+      @result = result
     end
 
     def status
-      response.status
+      result.status
+    end
+
+    def raw_response
+      result.response
     end
 
     def to_s
@@ -18,16 +22,14 @@ module Drowsy
 
     private
 
-    attr_reader :response
+    attr_reader :result
   end
 
   class UnauthorizedError < ResponseError; end
   class ForbiddenError < ResponseError; end
   class ResourceNotFound < ResponseError; end
   class ResourceInvalid < ResponseError
-    def errors
-      response.body[:errors]
-    end
+    delegate :errors, to: :result
   end
   class ClientError < ResponseError; end
   class ServerError < ResponseError; end

@@ -35,9 +35,6 @@ class Drowsy::Model
 
   # support embedded associations in API responsees
   # by including additional special attribute types
-  # * primary_key
-  # * .association_names
-  # * .association_raw_names
   def self.assignable_attributes
     (
       [:id, primary_key] + known_attributes + association_names + association_raw_names

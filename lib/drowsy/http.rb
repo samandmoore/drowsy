@@ -35,7 +35,7 @@ class Drowsy::Http
 
         payload[:status] = response.status
 
-        Result.new handle_response(response)
+        handle_response(response)
       rescue Faraday::ConnectionFailed, Faraday::TimeoutError, Faraday::SSLError => e
         # TODO: consider whether this should raise different error types for
         # opentimeout + connection error vs. readtimeout errors
@@ -62,23 +62,24 @@ class Drowsy::Http
   end
 
   def handle_response(response)
-    case response.status
+    result = Result.new response
+    case result.status
     when 200...400
-      response
+      result
     when 401
-      raise Drowsy::UnauthorizedError, response
+      raise Drowsy::UnauthorizedError, result
     when 403
-      raise Drowsy::ForbiddenError, response
+      raise Drowsy::ForbiddenError, result
     when 404
-      raise Drowsy::ResourceNotFound, response
+      raise Drowsy::ResourceNotFound, result
     when 422
-      raise Drowsy::ResourceInvalid, response
+      raise Drowsy::ResourceInvalid, result
     when 401...500
-      raise Drowsy::ClientError, response
+      raise Drowsy::ClientError, result
     when 500...600
-      raise Drowsy::ServerError, response
+      raise Drowsy::ServerError, result
     else
-      raise Drowsy::UnknownResponseError, response
+      raise Drowsy::UnknownResponseError, result
     end
   end
 
@@ -87,6 +88,10 @@ class Drowsy::Http
 
     def initialize(response)
       @response = response
+    end
+
+    def status
+      response.status
     end
 
     def data
